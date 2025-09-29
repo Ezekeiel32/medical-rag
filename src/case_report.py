@@ -78,7 +78,8 @@ def _summarize_and_analyze(doc: Dict[str, Any]) -> Tuple[str, str, str]:
                 summary = f"תיעוד ראשוני של הפגיעה. אובחן שבר בבסיס מסרק 5 בכף יד שמאל עם תזוזה, לאחר שנפל ממשאית בעבודה. בוצע ניסיון לשחזור וקיבוע בסד גבס."
                 analysis = "קריטי: הוכחה לקשר סיבתי מובהק בין תאונת העבודה לבין השבר. מתעד את האבחנה הראשונית."
             else:
-                summary = f"תיעוד קליני של השבר והטיפול הניתוחי. {'בוצע קיבוע ע"י K-WIRE' if m_fix else 'המשך טיפול שמרני'}."
+                # Avoid embedded quotes in the Hebrew phrase to prevent parsing issues on some environments
+                summary = f"תיעוד קליני של השבר והטיפול הניתוחי. {'בוצע קיבוע על ידי K-WIRE' if m_fix else 'המשך טיפול שמרני'}."
                 analysis = "מהותי: מאשש את חומרת הפגיעה, הטיפול הנדרש והמעקב הרפואי."
         elif m_frac:
             quote = _take_snippet(text, m_frac, 300)
