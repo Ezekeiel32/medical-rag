@@ -35,8 +35,8 @@ def _render_pdf_page(doc: fitz.Document, page_index: int, dpi: int = 300) -> Ima
 def _apply_bidi_processing(text: str, bidi_mode: str = "logical") -> str:
     """Apply bidirectional text processing for Hebrew."""
     if bidi_mode == "visual":
-        # Apply bidi per line to avoid scrambling mixed-direction text
-        return "\n".join(get_display(line) for line in (text or "").splitlines())
+        # Apply bidi to entire text block for proper RTL handling
+        return get_display(text or "")
     return text
 
 
