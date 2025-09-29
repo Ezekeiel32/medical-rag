@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>מערכת RAG לביטוח רפואי - מצגת מקצועית v1757526574</title>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Heebo', 'Arial Hebrew', Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #333;
+            direction: rtl;
+            overflow-x: hidden;
+        }
+
+        .presentation-container {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+        }
+
+        .slide {
+            width: 100%;
+            min-height: 150vh;
+            height: auto;
+            padding: 60px 80px 100px 80px;
+            display: none;
+            align-items: flex-start;
+            justify-content: flex-start;
+            flex-direction: column;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            position: relative;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        .slide h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #1e3c72;
+            text-align: center;
+            margin-bottom: 2rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 100%;
+        }
+
+        .slide h2 {
+            font-size: 2.8rem;
+            font-weight: 600;
+            color: #2a5298;
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 3px solid #4285f4;
+            padding-bottom: 1rem;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .slide h3 {
+            font-size: 2rem;
+            font-weight: 500;
+            color: #1e3c72;
+            margin-bottom: 1.5rem;
+            text-align: right;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            max-width: 1400px;
+            width: 100%;
+            margin: 3rem 0;
+        }
+
+        .content-box {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .full-width-content {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 3rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            max-width: 1400px;
+            width: 100%;
+            margin: 3rem 0;
+        }
+
+        .slide p {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            color: #444;
+            margin-bottom: 1.5rem;
+            text-align: right;
+        }
+
+        .slide ul {
+            font-size: 1.2rem;
+            line-height: 1.7;
+            color: #555;
+            margin-right: 2rem;
+        }
+
+        .slide li {
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .slide li::before {
+            content: "▶";
+            color: #4285f4;
+            font-weight: bold;
+            position: absolute;
+            right: -1.5rem;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-dot {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            border: 2px solid #4285f4;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-dot.active {
+            background: #4285f4;
+            transform: scale(1.3);
+        }
+
+        .nav-dot:hover {
+            background: #4285f4;
+            transform: scale(1.2);
+        }
+
+        .controls {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            z-index: 1000;
+            display: flex;
+            gap: 15px;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #4285f4;
+            color: #4285f4;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Heebo', Arial, sans-serif;
+        }
+
+        .control-btn:hover {
+            background: #4285f4;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 500px;
+            margin: 3rem 0;
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .image-placeholder {
+            width: 100%;
+            height: 350px;
+            background: linear-gradient(45deg, #f0f2f5, #e1e5e9);
+            border: 3px dashed #4285f4;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+
+        .image-placeholder::before {
+            content: "🖼️";
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .image-placeholder .prompt {
+            background: rgba(66, 133, 244, 0.1);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            border: 1px solid #4285f4;
+            max-width: 90%;
+            text-align: center;
+            direction: ltr;
+        }
+
+        .timeline-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 4rem 0;
+            position: relative;
+        }
+
+        .timeline-line {
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            right: 10%;
+            height: 6px;
+            background: linear-gradient(to left, #4285f4, #1e3c72);
+            border-radius: 3px;
+        }
+
+        .timeline-item {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            z-index: 10;
+            position: relative;
+            width: 280px;
+            text-align: center;
+            border: 4px solid #4285f4;
+            transition: transform 0.3s ease;
+        }
+
+        .timeline-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .timeline-item h4 {
+            color: #1e3c72;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-item p {
+            font-size: 1rem;
+            color: #666;
+            text-align: center;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin: 3rem 0;
+        }
+
+        .tech-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+            border-right: 8px solid #4285f4;
+            transition: transform 0.3s ease;
+        }
+
+        .tech-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .tech-card h4 {
+            font-size: 1.4rem;
+            color: #1e3c72;
+            margin-bottom: 1rem;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .highlight-box h3 {
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 2.5rem;
+            margin: 3rem 0;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 4rem;
+            font-weight: 700;
+            color: #4285f4;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 1.2rem;
+            color: #666;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                min-height: 120vh;
+                padding: 30px 20px;
+            }
+            
+            .slide h1 {
+                font-size: 2.5rem;
+            }
+            
+            .slide h2 {
+                font-size: 2rem;
+            }
+            
+            .slide h3 {
+                font-size: 1.5rem;
+            }
+            
+            .content-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                margin: 2rem 0;
+            }
+            
+            .content-box {
+                padding: 2rem;
+            }
+            
+            .full-width-content {
+                padding: 2rem;
+                margin: 2rem 0;
+            }
+            
+            .chart-container {
+                height: 300px;
+            }
+            
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+                margin: 2rem 0;
+            }
+            
+            .stat-card {
+                padding: 1.5rem;
+            }
+            
+            .stat-number {
+                font-size: 2.5rem;
+            }
+            
+            .stat-label {
+                font-size: 1rem;
+            }
+            
+            .tech-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                margin: 2rem 0;
+            }
+            
+            .tech-card {
+                padding: 2rem;
+                border-right-width: 5px;
+            }
+            
+            .generated-image {
+                margin: 2rem 0 !important;
+            }
+            
+            .generated-image img {
+                max-width: 100% !important;
+            }
+            
+            .timeline-container {
+                flex-direction: column;
+                gap: 2rem;
+                margin: 2rem 0;
+            }
+            
+            .timeline-line {
+                display: none;
+            }
+            
+            .timeline-item {
+                width: 100%;
+                max-width: 350px;
+                padding: 1.5rem;
+            }
+            
+            .controls {
+                top: 15px;
+                left: 15px;
+            }
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- Slide Navigation Controls -->
+        <div class="controls">
+            <button class="control-btn" onclick="previousSlide()">◀ הקודם</button>
+            <button class="control-btn" onclick="nextSlide()">הבא ▶</button>
+        </div>
+
+        <!-- Navigation Dots -->
+        <div class="navigation">
+            <div class="nav-dot active" onclick="goToSlide(0)"></div>
+            <div class="nav-dot" onclick="goToSlide(1)"></div>
+            <div class="nav-dot" onclick="goToSlide(2)"></div>
+            <div class="nav-dot" onclick="goToSlide(3)"></div>
+            <div class="nav-dot" onclick="goToSlide(4)"></div>
+            <div class="nav-dot" onclick="goToSlide(5)"></div>
+            <div class="nav-dot" onclick="goToSlide(6)"></div>
+            <div class="nav-dot" onclick="goToSlide(7)"></div>
+            <div class="nav-dot" onclick="goToSlide(8)"></div>
+        </div>
+
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <h1 class="fade-in">מערכת RAG מתקדמת</h1>
+            <h1 class="fade-in" style="margin-top: -1rem; margin-bottom: 3rem; font-size: 2.5rem; color: #2a5298;">לחברות ביטוח רפואי</h1>
+            
+            <div class="highlight-box fade-in">
+                <h3>פתרון טכנולוגי מתקדם לעיבוד אוטומטי של מסמכים רפואיים</h3>
+                <p style="font-size: 1.4rem; margin-top: 1rem;">
+                    שילוב מהפכני של טכנולוגיות OCR, בינה מלאכותית ומערכות RAG
+                </p>
+            </div>
+
+            <div class="stats-container fade-in">
+                <div class="stat-card">
+                    <span class="stat-number">99%</span>
+                    <div class="stat-label">דיוק בזיהוי טקסט</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">10x</span>
+                    <div class="stat-label">מהירות עיבוד</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">100%</span>
+                    <div class="stat-label">אבטחת מידע</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">3</span>
+                    <div class="stat-label">חודשי פיתוח</div>
+                </div>
+            </div>
+
+            <div class="image-placeholder fade-in">
+                <div class="prompt">
+                    <strong>Gemini Image Generation Prompt:</strong><br>
+                    "Create a professional, modern illustration showing a medical insurance office with AI technology. Show doctors' documents being processed by computer systems with holographic data visualization floating above. Use a corporate blue and grey color scheme. The scene should convey trust, technology, and medical professionalism. Include subtle Hebrew text elements and medical symbols. Make it photorealistic and suitable for executive presentation."
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: מה זה RAG? -->
+        <div class="slide">
+            <h2 class="fade-in">מה זה RAG?</h2>
+            
+            <div class="full-width-content fade-in">
+                <p style="font-size: 1.5rem; text-align: center; margin-bottom: 2rem; color: #1e3c72;">
+                    <strong>Retrieval-Augmented Generation (RAG)</strong> - טכנולוגיה מתקדמת המשלבת חיפוש מידע מדויק עם יצירת תשובות אינטליגנטיות
+                </p>
+            </div>
+
+            <div class="content-grid fade-in">
+                <div class="content-box">
+                    <h3>יתרונות עיקריים למערכות פנימיות:</h3>
+                    <ul>
+                        <li><strong>דיוק ואמינות מקסימליים</strong> - תשובות מבוססות אך ורק על מסמכים פנימיים מאומתים</li>
+                        <li><strong>מניעת "הזיות" AI</strong> - כל תשובה מגובה בציטוטים והפניות למקורות</li>
+                        <li><strong>עדכניות מתמדת</strong> - עבודה עם המידע החדש ביותר במאגרים הפנימיים</li>
+                        <li><strong>שקיפות מלאה</strong> - מעקב אחר מקור כל מידע ובסיס כל החלטה</li>
+                    </ul>
+                </div>
+                <div class="content-box">
+                    <h3>אבטחה ורגולציה:</h3>
+                    <ul>
+                        <li><strong>פרטיות מוחלטת</strong> - כל המידע נשאר בתוך המערכות הפנימיות</li>
+                        <li><strong>עמידה ברגולציות</strong> - תאימות מלאה ל-GDPR ו-HIPAA</li>
+                        <li><strong>אבטחת מידע מתקדמת</strong> - ללא שליחת נתונים רגישים לשירותי ענן חיצוניים</li>
+                        <li><strong>בקרת גישה מתקדמת</strong> - הרשאות מדורגות לפי תפקידים</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="generated-image fade-in" style="text-align: center; margin: 3rem 0; width: 100%;">
+                <img src="Generated Image September 10, 2025 - 8_43PM.png" alt="RAG Architecture Flowchart" style="width: 100%; max-width: 1000px; height: auto; border-radius: 15px; box-shadow: 0 15px 40px rgba(0,0,0,0.2);">
+            </div>
+
+            <div class="chart-container fade-in">
+                <div id="rag-comparison-chart"></div>
+            </div>
+        </div>
+
+        <!-- Slide 3: מערכת OCR מתקדמת -->
+        <div class="slide">
+            <h2 class="fade-in">מערכת OCR מתקדמת ועוצמתית</h2>
+            
+            <div class="content-grid fade-in">
+                <div class="content-box">
+                    <h3>יכולות טכנולוגיות מתקדמות:</h3>
+                    <ul>
+                        <li><strong>עיבוד מסמכים לא מסודרים</strong> - זיהוי טקסט ממסמכים סרוקים, צילומים באיכות נמוכה</li>
+                        <li><strong>זיהוי כתב יד רפואי</strong> - המרת כתב יד רופאים למחשב באמצעות מודלים מתקדמים</li>
+                        <li><strong>עמידות לרעשים</strong> - התמודדות עם צללים, קמטים, חותמות ורעשים ויזואליים</li>
+                        <li><strong>תמיכה מלאה בעברית</strong> - כולל ניקוד, כתיב חסר וגופנים מגוונים</li>
+                    </ul>
+                </div>
+                <div class="content-box">
+                    <h3>ביצועים ואמינות:</h3>
+                    <ul>
+                        <li><strong>דיוק גבוה</strong> - 99%+ בזיהוי טקסט מודפס</li>
+                        <li><strong>מהירות עיבוד</strong> - עד 1000 עמודים בשעה</li>
+                        <li><strong>אוטומציה מלאה</strong> - עיבוד אצווה ללא התערבות אנושית</li>
+                        <li><strong>אימות איכות</strong> - בדיקת דיוק אוטומטית לכל מסמך</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="chart-container fade-in">
+                <div id="ocr-accuracy-chart"></div>
+            </div>
+
+            <div class="image-placeholder fade-in">
+                <div class="prompt">
+                    <strong>Gemini Image Generation Prompt:</strong><br>
+                    "Create a before-and-after comparison showing OCR capabilities. Left side: show 3 messy medical documents - one blurry scan, one handwritten form, one photographed document at an angle. Right side: show clean, digitized text outputs in organized format. Connect them with transformation arrows labeled 'OCR'. Use medical symbols, Hebrew text samples, and professional blue/grey corporate styling. Make it look like a technology demonstration for business executives."
+                </div>
+            </div>
+
+            <div class="highlight-box fade-in">
+                <h3>הוכחת יכולות במסמכים רפואיים אמיתיים</h3>
+                <p>המערכת נבדקה בהצלחה על מאה מסמכים רפואיים, כולל דוחות מעבדה, חוות דעת רפואיות, וטפסי תביעות מורכבים</p>
+            </div>
+        </div>
+
+        <!-- Slide 4: Fine-Tuning vs Training from Scratch -->
+        <div class="slide">
+            <h2 class="fade-in">אימון מודל חכם - Fine-Tuning vs התחלה מאפס</h2>
+            
+            <div class="content-grid fade-in">
+                <div class="content-box" style="border: 3px solid #ff6b6b;">
+                    <h3 style="color: #ff6b6b;">❌ אימון מודל מאפס</h3>
+                    <ul>
+                        <li><strong>זמן:</strong> 6-12 חודשים</li>
+                        <li><strong>עלות:</strong> מיליוני דולרים</li>
+                        <li><strong>נתונים:</strong> מיליארדי מסמכים</li>
+                        <li><strong>חומרה:</strong> מאות GPU מתקדמים</li>
+                        <li><strong>סיכון:</strong> גבוה מאוד</li>
+                    </ul>
+                </div>
+                <div class="content-box" style="border: 3px solid #4CAF50;">
+                    <h3 style="color: #4CAF50;">✅ Fine-Tuning</h3>
+                    <ul>
+                        <li><strong>זמן:</strong> 2-4 שבועות</li>
+                        <li><strong>עלות:</strong> אלפי דולרים</li>
+                        <li><strong>נתונים:</strong> מסמכים ארגוניים</li>
+                        <li><strong>חומרה:</strong> GPU בודד</li>
+                        <li><strong>סיכון:</strong> נמוך</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="chart-container fade-in">
+                <div id="cost-comparison-chart"></div>
+            </div>
+
+            <div class="full-width-content fade-in">
+                <h3>יתרונות Fine-Tuning לביטוח רפואי:</h3>
+                <div class="tech-grid">
+                    <div class="tech-card">
+                        <h4>🎯 התאמה לטרמינולוגיה</h4>
+                        <p>המודל לומד את הז'רגון הרפואי-ביטוחי הייחודי לארגון, כולל קיצורים ומושגים מקצועיים</p>
+                    </div>
+                    <div class="tech-card">
+                        <h4>🔄 שיפור מתמיד</h4>
+                        <p>עדכון המודל עם נתונים חדשים בקלות, הבטחת רלוונטיות לאורך זמן</p>
+                    </div>
+                    <div class="tech-card">
+                        <h4>⚡ יעילות כלכלית</h4>
+                        <p>חיסכון של מיליוני שקלים בהשוואה לפיתוח מודל מאפס</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="image-placeholder fade-in">
+                <div class="prompt">
+                    <strong>Gemini Image Generation Prompt:</strong><br>
+                    "Create a professional infographic comparing 'Training from Scratch' vs 'Fine-Tuning'. Left side: show massive mountain of documents, server farm, many dollar signs, long timeline. Right side: show small stack of documents, single GPU server, few dollar signs, short timeline. Use a VS symbol in the middle. Corporate blue/grey theme, clean business presentation style. Include transformation arrow showing efficiency of fine-tuning approach."
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: הרחבת המערכת -->
+        <div class="slide">
+            <h2 class="fade-in">הרחבת המערכת - מעבר למה שקיים כיום</h2>
+            
+            <div class="content-grid fade-in">
+                <div class="content-box">
+                    <h3>🔗 אינטגרציה במערכות קיימות</h3>
+                    <ul>
+                        <li><strong>API יעודי</strong> - חיבור למערכות CRM וניהול תביעות</li>
+                        <li><strong>תשובות בזמן אמת</strong> - מידע מיידי לנציגי שירות לקוחות</li>
+                        <li><strong>ממשק אינטואיטיבי</strong> - שילוב חלק בתהליכי העבודה הקיימים</li>
+                        <li><strong>דוחות וניתוחים</strong> - מעקב ביצועים ושיפור מתמיד</li>
+                    </ul>
+                </div>
+                <div class="content-box">
+                    <h3>🎤 מערכת ASR למפגשים קליניים</h3>
+                    <ul>
+                        <li><strong>תמלול שיחות אוטומטי</strong> - המרת דיבור לטקסט מובנה</li>
+                        <li><strong>סיכום אינטליגנטי</strong> - זיהוי נושאים מרכזיים והחלטות</li>
+                        <li><strong>עדכון מאגר הידע</strong> - השתלבות אוטומטית במערכת ה-RAG</li>
+                        <li><strong>חיפוש במידע מדובר</strong> - אפשרות לחפש בתוכן שיחות</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="chart-container fade-in">
+                <div id="integration-timeline-chart"></div>
+            </div>
+
+            <div class="image-placeholder fade-in">
+                <div class="prompt">
+                    <strong>Gemini Image Generation Prompt:</strong><br>
+                    "Create a system integration diagram showing RAG system at center connected to: 1) CRM system (left) with bi-directional API arrows, 2) Audio recording/ASR system (right) with microphone icon flowing to text processing, 3) Existing databases (bottom) feeding into RAG. Show data flow with clear arrows, professional corporate design, blue/grey color scheme. Include icons for each system component and 'Real-time' labels on connections."
+                </div>
+            </div>
+
+            <div class="highlight-box fade-in">
+                <h3>דוגמה לשימוש במערכת משולבת</h3>
+                <p>נציג שירות פונה למערכת, מקבל תוך שניות סיכום מלא של היסטוריה רפואית, תביעות קודמות, והמלצות מבוססות נתונים</p>
+            </div>
+
+            <div class="tech-grid fade-in">
+                <div class="tech-card">
+                    <h4>📊 דוחות אנליטיים</h4>
+                    <p>מעקב אחר מגמות, זיהוי דפוסים, וניתוח נתוני תביעות לשיפור תהליכים</p>
+                </div>
+                <div class="tech-card">
+                    <h4>🔍 חיפוש מתקדם</h4>
+                    <p>אפשרות לחפש במידע משולב - מסמכים, שיחות, והיסטוריה רפואית</p>
+                </div>
+                <div class="tech-card">
+                    <h4>🛡️ אבטחה מתקדמת</h4>
+                    <p>רישום כל פעולה, הרשאות מדורגות, ועמידה בתקנים הגבוהים ביותר</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: דרישות חומרה -->
+        <div class="slide">
+            <h2 class="fade-in">ניתוח צרכי חומרה וביצועים</h2>
+            
+            <div class="content-grid fade-in">
+                <div class="content-box">
+                    <h3>⚡ דרישות חומרה מומלצות:</h3>
+                    <ul>
+                        <li><strong>יחידת GPU:</strong> NVIDIA A100 או H100</li>
+                        <li><strong>זיכרון VRAM:</strong> 64GB לפחות</li>
+                        <li><strong>מעבד CPU:</strong> מעבד רב-ליבות מודרני</li>
+                        <li><strong>זיכרון RAM:</strong> 128GB לפחות</li>
+                        <li><strong>אחסון:</strong> כונן SSD מהיר (NVMe)</li>
+                    </ul>
+                </div>
+                <div class="content-box">
+                    <h3>📈 ביצועים צפויים:</h3>
+                    <ul>
+                        <li><strong>עיבוד OCR:</strong> 1000+ עמודים/שעה</li>
+                        <li><strong>זמן תגובה RAG:</strong> 2-5 שניות</li>
+                        <li><strong>דיוק זיהוי:</strong> 99%+ טקסט מודפס</li>
+                        <li><strong>קיבולת משתמשים:</strong> 100+ בו זמנית</li>
+                        <li><strong>זמינות:</strong> 99.9% uptime</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="chart-container fade-in">
+                <div id="hardware-performance-chart"></div>
+            </div>
+
+            <div class="image-placeholder fade-in">
+                <div class="prompt">
+                    <strong>Gemini Image Generation Prompt:</strong><br>
+                    "Create a clean technical illustration of server hardware requirements. Show a modern server rack with labeled components: GPU card (NVIDIA A100/H100) with 64GB VRAM label, CPU with multi-core visualization, RAM modules labeled 128GB+, and NVMe SSD storage. Use technical blueprint style with corporate blue/grey colors. Include performance metrics as floating data points around the server. Make it suitable for executive technical presentation."
+                </div>
+            </div>
+
+            <div class="highlight-box fade-in">
+                <h3>💰 תמורה להשקעה</h3>
+                <p>השקעה חד-פעמית בחומרה תחזיר את עצמה תוך 6-12 חודשים באמצעות חיסכון בעבודת כח אדם ושיפור יעילות התהליכים</p>
+            </div>
+
+            <div class="tech-grid fade-in">
+                <div class="tech-card">
+                    <h4>🚀 מדרגיות</h4>
+                    <p>המערכת מתוכננת להתרחב בהתאם לצרכים - החל ממאות מסמכים ועד למיליונים</p>
+                </div>
+                <div class="tech-card">
+                    <h4>🔄 גמישות</h4>
+                    <p>אפשרות להריץ במנה או בזמן אמת, בהתאם לצרכי הארגון</p>
+                </div>
+                <div class="tech-card">
+                    <h4>🛠️ תחזוקה</h4>
+                    <p>עדכונים אוטומטיים, ניטור ביצועים, וגיבויים מתוזמנים</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: לוח זמנים -->
+        <div class="slide">
+            <h2 class="fade-in">לוח זמנים ושלבי הפרויקט</h2>
+            
+            <div class="full-width-content fade-in">
+                <p style="font-size: 1.4rem; text-align: center; margin-bottom: 2rem; color: #1e3c72;">
+                    <strong>3 חודשי פיתוח מלאים</strong> - כל השלבים מבוצעים על ידי מפתח יחיד למקסימום יעילות ותקשורת
+                </p>
+            </div>
+
+            <div class="timeline-container fade-in">
+                <div class="timeline-line"></div>
+                <div class="timeline-item">
+                    <h4>חודש 1</h4>
+                    <p>איסוף דרישות והקמת תשתית</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>חודש 2</h4>
+                    <p>פיתוח OCR ומערכת RAG</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>חודש 3</h4>
+                    <p>אינטגרציה ובדיקות</p>
+                </div>
+            </div>
+
+            <div class="content-grid fade-in">
+                <div class="content-box">
+                    <h3>📋 שלב א': פיתוח המערכת (חודש 1-2)</h3>
+                    <ul>
+                        <li><strong>שבוע 1-2:</strong> ניתוח דרישות והקמת סביבת פיתוח</li>
+                        <li><strong>שבוע 3-4:</strong> פיתוח רכיב OCR וחיבור ל-Surya</li>
+                        <li><strong>שבוע 5-6:</strong> בניית מערכת RAG ומאגר וקטורי</li>
+                        <li><strong>שבוע 7-8:</strong> פיתוח API ומערכת ניהול</li>
+                    </ul>
+                </div>
+                <div class="content-box">
+                    <h3>🔧 שלב ב': אינטגרציה (חודש 3)</h3>
+                    <ul>
+                        <li><strong>שבוע 9-10:</strong> אינטגרציה במערכות קיימות</li>
+                        <li><strong>שבוע 11:</strong> Fine-Tuning על נתונים פנימיים</li>
+                        <li><strong>שבוע 12:</strong> בדיקות, ולידציה והדרכות</li>
+                        <li><strong>שבוע 13:</strong> השקה וליווי ראשוני</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="chart-container fade-in">
+                <div id="project-timeline-chart"></div>
+            </div>
+
+            <div class="image-placeholder fade-in">
+                <div class="prompt">
+                    <strong>Gemini Image Generation Prompt:</strong><br>
+                    "Create a professional Gantt chart visualization showing 3-month project timeline. Show two main phases: 'Phase A: System Development' (months 1-2) and 'Phase B: Integration & Testing' (month 3). Include milestones with checkmarks, progress bars, and timeline arrows. Use corporate blue/grey colors, clean business presentation style. Add a note at bottom emphasizing 'Single Developer = Maximum Efficiency & Communication'. Make it executive-ready."
+                </div>
+            </div>
+
+            <div class="highlight-box fade-in">
+                <h3>🎯 יתרון הפיתוח על ידי מפתח יחיד</h3>
+                <p>ניסיון מוכח, תקשורת ישירה וחלקה, קבלת החלטות מהירה, ואחריות מלאה על התוצר הסופי</p>
+            </div>
+        </div>
+
+        <!-- Slide 8: ROI וערך עסקי -->
+        <div class="slide">
+            <h2 class="fade-in">תמורה להשקעה וערך עסקי</h2>
+            
+            <div class="stats-container fade-in">
+                <div class="stat-card">
+                    <span class="stat-number">75%</span>
+                    <div class="stat-label">חיסכון בזמן עיבוד</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">90%</span>
+                    <div class="stat-label">הפחתת שגיאות אנוש</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">12</span>
+                    <div class="stat-label">חודשים להחזר השקעה</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">24/7</span>
+                    <div class="stat-label">זמינות מערכת</div>
+                </div>
+            </div>
+
+            <div class="chart-container fade-in">
+                <div id="roi-analysis-chart"></div>
+            </div>
+
+            <div class="content-grid fade-in">
+                <div class="content-box">
+                    <h3>💼 יתרונות עסקיים מיידיים:</h3>
+                    <ul>
+                        <li><strong>שיפור חוויית לקוח</strong> - תגובות מהירות ומדויקות יותר</li>
+                        <li><strong>הפחתת עומס עבודה</strong> - אוטומציה של משימות חוזרות</li>
+                        <li><strong>שיפור איכות השירות</strong> - בסיס מידע אחיד ומעודכן</li>
+                        <li><strong>עמידה ברגולציה</strong> - תיעוד מלא וניתן למעקב</li>
+                    </ul>
+                </div>
+                <div class="content-box">
+                    <h3>📈 יתרונות אסטרטגיים ארוכי טווח:</h3>
+                    <ul>
+                        <li><strong>יתרון תחרותי</strong> - טכנולוגיה מתקדמת במגזר שמרני</li>
+                        <li><strong>בסיס לחדשנות</strong> - פלטפורמה להרחבות עתידיות</li>
+                        <li><strong>שיפור קבלת החלטות</strong> - תובנות מבוססות נתונים</li>
+                        <li><strong>מוכנות עתידית</strong> - התאמה לטרנדים טכנולוגיים</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="image-placeholder fade-in">
+                <div class="prompt">
+                    <strong>Gemini Image Generation Prompt:</strong><br>
+                    "Create a professional ROI visualization showing business value metrics. Include upward trending graphs, dollar signs, efficiency icons, and transformation arrows. Show 'before vs after' comparison with productivity metrics. Use corporate blue/grey theme with green accents for positive results. Include icons representing: cost reduction, time savings, accuracy improvement, customer satisfaction. Make it executive presentation ready with clear value propositions."
+                </div>
+            </div>
+
+            <div class="highlight-box fade-in">
+                <h3>🎯 השקעה חכמה בעתיד</h3>
+                <p>המערכת לא רק פותרת בעיות של היום, אלא מכינה את הארגון לאתגרים העתידיים בעולם הביטוח הרפואי הדיגיטלי</p>
+            </div>
+        </div>
+
+        <!-- Slide 9: סיכום וצעדים הבאים -->
+        <div class="slide">
+            <h2 class="fade-in">סיכום וצעדים הבאים</h2>
+            
+            <div class="highlight-box fade-in">
+                <h3>🎯 למה לבחור במערכת RAG שלנו?</h3>
+                <p style="font-size: 1.3rem;">
+                    פתרון מתקדם, מוכח ומותאם במיוחד לצרכי הביטוח הרפואי בישראל
+                </p>
+            </div>
+
+            <div class="tech-grid fade-in">
+                <div class="tech-card">
+                    <h4>🚀 טכנולוגיה מובילה</h4>
+                    <p>שילוב חדשני של OCR מתקדם, RAG ובינה מלאכותית</p>
+                </div>
+                <div class="tech-card">
+                    <h4>🛡️ אבטחה מקסימלית</h4>
+                    <p>עמידה בכל הרגולציות ושמירה מוחלטת על פרטיות הנתונים</p>
+                </div>
+                <div class="tech-card">
+                    <h4>⚡ יעילות מוכחת</h4>
+                    <p>שיפור דרמטי במהירות ודיוק עיבוד המידע</p>
+                </div>
+                <div class="tech-card">
+                    <h4>🎯 התאמה מושלמת</h4>
+                    <p>פיתוח מותאם לצרכים הספציפיים של הארגון</p>
+                </div>
+            </div>
+
+            <div class="full-width-content fade-in">
+                <h3>🔄 הצעדים הבאים:</h3>
+                <div class="timeline-container" style="margin: 2rem 0;">
+                    <div class="timeline-line"></div>
+                    <div class="timeline-item">
+                        <h4>שלב 1</h4>
+                        <p>פגישת היכרות מעמיקה</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>שלב 2</h4>
+                        <p>ניתוח צרכים מפורט</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>שלב 3</h4>
+                        <p>הצעת מחיר והתחלת פרויקט</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container fade-in">
+                <div id="implementation-roadmap-chart"></div>
+            </div>
+
+            <div class="image-placeholder fade-in">
+                <div class="prompt">
+                    <strong>Gemini Image Generation Prompt:</strong><br>
+                    "Create a professional conclusion slide illustration showing successful digital transformation. Display a modern insurance office with AI technology seamlessly integrated - employees working with advanced systems, holographic data displays, satisfied customers, and efficiency indicators. Show a handshake between business executive and technology consultant. Use corporate blue/grey colors with touches of success green. Include subtle Hebrew text elements and medical insurance symbols. Make it inspirational and future-focused for executive presentation."
+                </div>
+            </div>
+
+            <div class="highlight-box fade-in" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);">
+                <h3>🤝 מוכנים לשינוי?</h3>
+                <p style="font-size: 1.4rem;">
+                    בואו נתחיל מסע של שיפור וחדשנות טכנולוגית יחד
+                </p>
+            </div>
+
+            <div class="stats-container fade-in">
+                <div class="stat-card">
+                    <span class="stat-number">100%</span>
+                    <div class="stat-label">מחויבות להצלחה</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">24/7</span>
+                    <div class="stat-label">תמיכה ומעקב</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">∞</span>
+                    <div class="stat-label">אפשרויות פיתוח</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Presentation Navigation
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const navDots = document.querySelectorAll('.nav-dot');
+        const totalSlides = slides.length;
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            navDots[currentSlide].classList.remove('active');
+            
+            currentSlide = (n + totalSlides) % totalSlides;
+            
+            slides[currentSlide].classList.add('active');
+            navDots[currentSlide].classList.add('active');
+            
+            // Trigger fade-in animations
+            const fadeElements = slides[currentSlide].querySelectorAll('.fade-in');
+            fadeElements.forEach((el, index) => {
+                setTimeout(() => {
+                    el.classList.add('visible');
+                }, index * 200);
+            });
+            
+            // Generate charts for the current slide
+            generateChartsForSlide(currentSlide);
+        }
+
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+
+        function previousSlide() {
+            showSlide(currentSlide - 1);
+        }
+
+        function goToSlide(n) {
+            showSlide(n);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                previousSlide();
+            } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                nextSlide();
+            }
+        });
+
+        // Chart Generation Functions
+        function generateChartsForSlide(slideIndex) {
+            switch(slideIndex) {
+                case 1:
+                    generateRAGComparisonChart();
+                    break;
+                case 2:
+                    generateOCRAccuracyChart();
+                    break;
+                case 3:
+                    generateCostComparisonChart();
+                    break;
+                case 4:
+                    generateIntegrationTimelineChart();
+                    break;
+                case 5:
+                    generateHardwarePerformanceChart();
+                    break;
+                case 6:
+                    generateProjectTimelineChart();
+                    break;
+                case 7:
+                    generateROIAnalysisChart();
+                    break;
+                case 8:
+                    generateImplementationRoadmapChart();
+                    break;
+            }
+        }
+
+        function generateRAGComparisonChart() {
+            const data = [{
+                x: ['דיוק מידע', 'מהירות תגובה', 'אבטחת נתונים', 'עלות תחזוקה', 'גמישות עדכון'],
+                y: [95, 85, 99, 20, 95],
+                type: 'bar',
+                name: 'מערכת RAG',
+                marker: {
+                    color: '#4285f4'
+                }
+            }, {
+                x: ['דיוק מידע', 'מהירות תגובה', 'אבטחת נתונים', 'עלות תחזוקה', 'גמישות עדכון'],
+                y: [60, 70, 40, 80, 30],
+                type: 'bar',
+                name: 'מערכות מסורתיות',
+                marker: {
+                    color: '#9AA0A6'
+                }
+            }];
+
+            const layout = {
+                title: {
+                    text: 'השוואה: מערכת RAG מול מערכות מסורתיות',
+                    font: { size: 18, family: 'Heebo, Arial Hebrew' }
+                },
+                xaxis: {
+                    title: 'פרמטרים',
+                    font: { family: 'Heebo, Arial Hebrew' }
+                },
+                yaxis: {
+                    title: 'ביצועים (%)',
+                    font: { family: 'Heebo, Arial Hebrew' }
+                },
+                font: { family: 'Heebo, Arial Hebrew' }
+            };
+
+            Plotly.newPlot('rag-comparison-chart', data, layout);
+        }
+
+        function generateOCRAccuracyChart() {
+            const data = [{
+                x: ['טקסט מודפס נקי', 'טקסט מודפס ישן', 'כתב יד ברור', 'כתב יד רופאים', 'מסמכים פגומים'],
+                y: [99.5, 97.8, 92.3, 87.5, 84.2],
+                type: 'bar',
+                name: 'דיוק זיהוי (%)',
+                marker: {
+                    color: ['#4CAF50', '#8BC34A', '#FFC107', '#FF9800', '#FF5722']
+                }
+            }];
+
+            const layout = {
+                title: {
+                    text: 'דיוק מערכת OCR בסוגי מסמכים שונים',
+                    font: { size: 18, family: 'Heebo, Arial Hebrew' }
+                },
+                xaxis: {
+                    title: 'סוג מסמך',
+                    font: { family: 'Heebo, Arial Hebrew' }
+                },
+                yaxis: {
+                    title: 'דיוק (%)',
+                    range: [0, 100],
+                    font: { family: 'Heebo, Arial Hebrew' }
+                },
+                font: { family: 'Heebo, Arial Hebrew' }
+            };
+
+            Plotly.newPlot('ocr-accuracy-chart', data, layout);
+        }
+
+        function generateCostComparisonChart() {
+            const categories = ['עלות פיתוח', 'זמן פיתוח (חודשים)', 'סיכון פרויקט', 'משאבי חומרה'];
+            
+            const data = [{
+                r: [1000000, 12, 90, 100],
+                theta: categories,
+                type: 'scatterpolar',
+                fill: 'toself',
+                name: 'פיתוח מאפס',
+                line: { color: '#FF6B6B' },
+                fillcolor: 'rgba(255, 107, 107, 0.3)'
+            }, {
+                r: [50000, 3, 20, 20],
+                theta: categories,
+                type: 'scatterpolar',
+                fill: 'toself',
+                name: 'Fine-Tuning',
+                line: { color: '#4CAF50' },
+                fillcolor: 'rgba(76, 175, 80, 0.3)'
+            }];
+
+            const layout = {
+                title: {
+                    text: 'השוואת עלויות: פיתוח מאפס מול Fine-Tuning',
+                    font: { size: 18, family: 'Heebo, Arial Hebrew' }
+                },
+                polar: {
+                    radialaxis: {
+                        visible: true,
+                        range: [0, 1000000]
+                    }
+                },
+                font: { family: 'Heebo, Arial Hebrew' }
+            };
+
+            Plotly.newPlot('cost-comparison-chart', data, layout);
+        }
+
+        function generateIntegrationTimelineChart() {
+            const data = [{
+                x: ['API Integration', 'ASR Setup', 'Database Connection', 'UI Development', 'Testing', 'Deployment'],
+                y: [2, 3, 1, 4, 2, 1],
+                type: 'bar',
+                name: 'שבועות פיתוח',
+                marker: {
+                    color: '#4285f4'
+                }
+            }];
+
+            const layout = {
+                title: {
+                    text: 'לוח זמנים להרחבת המערכת',
+                    font: { size: 18, family: 'Heebo, Arial Hebrew' }
+                },
+                xaxis: {
+                    title: 'רכיבי המערכת',
+                    font: { family: 'Heebo, Arial Hebrew' }
+                },
+                yaxis: {
+                    title: 'זמן (שבועות)',
+                    font: { family: 'Heebo, Arial Hebrew' }
+                },
+                font: { family: 'Heebo, Arial Hebrew' }
+            };
+
+            Plotly.newPlot('integration-timeline-chart', data, layout);
+        }
+
+        function generateHardwarePerformanceChart() {
+            const trace1 = {
+                x: ['A100 64GB', 'H100 64GB', 'RTX 4090', 'CPU Only'],
+                y: [1000, 1200, 400, 50],
+                type: 'bar',
+                name: 'עמודים/שעה',
+                marker: { color: '#4285f4' }
+            };
+
+            const trace2 = {
+                x: ['A100 64GB', 'H100 64GB', 'RTX 4090', 'CPU Only'],
+                y: [2, 1.5, 5, 30],
+                type: 'bar',
+                name: 'זמן תגובה (שניות)',
+                marker: { color: '#FF9800' },
+                yaxis: 'y2'
+            };
+
+            const data = [trace1, trace2];
+
+            const layout = {
+                title: {
+                    text: 'ביצועי חומרה - השוואה מפורטת',
+                    font: { size: 18, family: 'Heebo, Arial Hebrew' }
+                },
+                xaxis: {
+                    title: 'סוג חומרה',
+                    font: { family: 'Heebo, Arial Hebrew' }
+                },
+                yaxis: {
+                    title: 'עמודים לשעה',
+                    side: 'right',
+                    font: { family: 'Heebo, Arial Hebrew' }
+                },
+                yaxis2: {
+                    title: 'זמן תגובה (שניות)',
+                    overlaying: 'y',
+                    side: 'left',
+                    font: { family: 'Heebo, Arial Hebrew' }
+                },
+                font: { family: 'Heebo, Arial Hebrew' }
+            };
+
+            Plotly.newPlot('hardware-performance-chart', data, layout);
+        }
+
+        function generateProjectTimelineChart() {
+            const data = [{
+                x: ['Week 1-2', 'Week 3-4', 'Week 5-6', 'Week 7-8', 'Week 9-10', 'Week 11', 'Week 12', 'Week 13'],
+                y: ['Requirements', 'OCR Development', 'RAG System', 'API Development', 'Integration', 'Fine-Tuning', 'Testing', 'Deployment'],
+                z: [[100], [100], [100], [100], [100], [100], [100], [100]],
+                type: 'heatmap',
+                colorscale: [[0, '#E3F2FD'], [1, '#1976D2']],
+                showscale: false
+            }];
+
+            const layout = {
+                title: {
+                    text: 'מפת פיתוח הפרויקט - 13 שבועות',
+                    font: { size: 18, family: 'Heebo, Arial Hebrew' }
+                },
+                xaxis: {
+                    title: 'זמן',
+                    font: { family: 'Heebo, Arial Hebrew' }
+                },
+                yaxis: {
+                    title: 'משימות',
+                    font: { family: 'Heebo, Arial Hebrew' }
+                },
+                font: { family: 'Heebo, Arial Hebrew' }
+            };
+
+            Plotly.newPlot('project-timeline-chart', data, layout);
+        }
+
+        function generateROIAnalysisChart() {
+            const months = ['חודש 1', 'חודש 6', 'חודש 12', 'חודש 18', 'חודש 24'];
+            const investment = [-500000, -400000, -200000, 100000, 400000];
+            const savings = [0, 200000, 500000, 800000, 1200000];
+
+            const data = [{
+                x: months,
+                y: investment,
+                type: 'scatter',
+                mode: 'lines+markers',
+                name: 'השקעה מצטברת',
+                line: { color: '#FF6B6B' }
+            }, {
+                x: months,
+                y: savings,
+                type: 'scatter',
+                mode: 'lines+markers',
+                name: 'חיסכון מצטבר',
+                line: { color: '#4CAF50' }
+            }];
+
+            const layout = {
+                title: {
+                    text: 'ניתוח תמורה להשקעה לאורך זמן',
+                    font: { size: 18, family: 'Heebo, Arial Hebrew' }
+                },
+                xaxis: {
+                    title: 'זמן',
+                    font: { family: 'Heebo, Arial Hebrew' }
+                },
+                yaxis: {
+                    title: 'סכום (₪)',
+                    font: { family: 'Heebo, Arial Hebrew' }
+                },
+                font: { family: 'Heebo, Arial Hebrew' }
+            };
+
+            Plotly.newPlot('roi-analysis-chart', data, layout);
+        }
+
+        function generateImplementationRoadmapChart() {
+            const data = [{
+                x: [1, 2, 3, 4, 5],
+                y: ['פגישת היכרות', 'ניתוח דרישות', 'הצעת מחיר', 'התחלת פרויקט', 'השקה מלאה'],
+                type: 'scatter',
+                mode: 'markers+lines',
+                marker: { 
+                    size: 15, 
+                    color: '#4285f4',
+                    line: { width: 2, color: 'white' }
+                },
+                line: { color: '#4285f4', width: 3 }
+            }];
+
+            const layout = {
+                title: {
+                    text: 'מפת דרכים להטמעה',
+                    font: { size: 18, family: 'Heebo, Arial Hebrew' }
+                },
+                xaxis: {
+                    title: 'שלבים',
+                    font: { family: 'Heebo, Arial Hebrew' }
+                },
+                yaxis: {
+                    title: 'משימות',
+                    font: { family: 'Heebo, Arial Hebrew' }
+                },
+                font: { family: 'Heebo, Arial Hebrew' }
+            };
+
+            Plotly.newPlot('implementation-roadmap-chart', data, layout);
+        }
+
+        // Initialize presentation
+        document.addEventListener('DOMContentLoaded', function() {
+            showSlide(0);
+        });
+    </script>
+</body>
+</html>

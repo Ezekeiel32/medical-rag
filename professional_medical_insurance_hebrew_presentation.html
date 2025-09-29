@@ -1,0 +1,1696 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="description" content="Enterprise-grade AI RAG system for medical insurance - Professional presentation showcasing cutting-edge OCR, Fine-Tuning, and system integration solutions">
+    <meta name="keywords" content="AI, RAG, Medical Insurance, OCR, Fine-Tuning, Hebrew, Enterprise, Technology, Healthcare">
+    <meta name="author" content="Professional AI Development Solutions">
+    <meta name="robots" content="noindex, nofollow">
+    <title>AI לחברת ביטוח רפואי - המצגת המקצועית החדשנית ביותר | Enterprise Medical AI Solution</title>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Heebo', 'Arial Hebrew', Arial, sans-serif;
+            background: linear-gradient(135deg, #64748b 0%, #94a3b8 20%, #cbd5e1 40%, #e2e8f0 70%, #f8fafc 100%);
+            color: #333;
+            direction: rtl;
+            overflow-x: hidden;
+            line-height: 1.7;
+            position: relative;
+        }
+
+
+        .presentation-container {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+        }
+
+        .slide {
+            width: 100%;
+            min-height: 200vh;
+            padding: 60px 100px 120px 100px;
+            display: none;
+            align-items: flex-start;
+            justify-content: flex-start;
+            flex-direction: column;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 25%, #e2e8f0 50%, #cbd5e1 75%, #94a3b8 100%);
+            position: relative;
+            overflow-y: auto;
+            box-sizing: border-box;
+            border: 1px solid rgba(255,255,255,0.5);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.6);
+            backdrop-filter: blur(10px);
+        }
+
+
+        .slide > * {
+            position: relative;
+            z-index: 2;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        .slide h1 {
+            font-size: 4.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1e293b 0%, #475569 40%, #64748b 80%, #0284c7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+            margin-bottom: 3.5rem;
+            width: 100%;
+            text-shadow: 0 4px 8px rgba(30, 41, 59, 0.2);
+            letter-spacing: -1px;
+            position: relative;
+            filter: drop-shadow(0 2px 4px rgba(71, 85, 105, 0.15));
+        }
+
+        .slide h1::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 4px;
+            background: linear-gradient(90deg, #64748b 0%, #94a3b8 50%, #0284c7 100%);
+            border-radius: 3px;
+            box-shadow: 0 1px 4px rgba(100, 116, 139, 0.3);
+        }
+
+        .slide h2 {
+            font-size: 3.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #374151 0%, #4b5563 50%, #64748b 80%, #0284c7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 1.5rem;
+            width: 100%;
+            position: relative;
+            letter-spacing: -0.5px;
+            border-bottom: 3px solid transparent;
+            border-image: linear-gradient(90deg, #64748b 0%, #94a3b8 50%, #0284c7 100%) 1;
+            filter: drop-shadow(0 2px 4px rgba(71, 85, 105, 0.15));
+        }
+
+        .slide h2::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            right: 0;
+            width: 50%;
+            height: 4px;
+            background: linear-gradient(90deg, #64748b, #0284c7);
+        }
+
+        .slide h3 {
+            font-size: 2.6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #0c4a6e 0%, #0284c7 50%, #0ea5e9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 2rem;
+            text-align: right;
+            position: relative;
+            letter-spacing: -0.3px;
+            filter: drop-shadow(0 2px 4px rgba(14, 165, 233, 0.15));
+        }
+
+        .slide h3::before {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            right: 0;
+            width: 90px;
+            height: 4px;
+            background: linear-gradient(90deg, #0c4a6e 0%, #0284c7 50%, #0ea5e9 100%);
+            border-radius: 2px;
+            box-shadow: 0 2px 6px rgba(14, 165, 233, 0.3);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            max-width: 1400px;
+            width: 100%;
+            margin: 2rem 0;
+        }
+
+        .content-box {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 50%, rgba(226, 232, 240, 0.8) 100%);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08), 0 5px 15px rgba(100, 116, 139, 0.1);
+            backdrop-filter: blur(8px);
+            border: 2px solid rgba(148, 163, 184, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+
+
+
+
+
+        .content-box:hover {
+            box-shadow: 0 12px 25px rgba(0,0,0,0.1), 0 6px 15px rgba(100, 116, 139, 0.12);
+            border-color: rgba(2, 132, 199, 0.4);
+        }
+
+
+
+        .full-width-content {
+            background: linear-gradient(135deg, rgba(219, 234, 254, 0.4) 0%, rgba(147, 197, 253, 0.35) 50%, rgba(96, 165, 250, 0.3) 100%);
+            padding: 4rem;
+            border-radius: 30px;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.15), 0 15px 50px rgba(59, 130, 246, 0.2);
+            backdrop-filter: blur(25px);
+            border: 2px solid rgba(59, 130, 246, 0.4);
+            max-width: 1400px;
+            width: 100%;
+            margin: 3rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+
+        .slide p {
+            font-size: 1.5rem;
+            line-height: 1.9;
+            color: #1e293b;
+            margin-bottom: 1.8rem;
+            text-align: right;
+            font-weight: 500;
+        }
+
+        .slide ul {
+            font-size: 1.4rem;
+            line-height: 1.8;
+            color: #334155;
+            margin-right: 2.5rem;
+        }
+
+        .slide li {
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-right: 2.5rem;
+            font-weight: 500;
+        }
+
+        .slide li strong {
+            background: linear-gradient(135deg, #374151 0%, #4b5563 50%, #64748b 80%, #0284c7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            filter: drop-shadow(0 1px 2px rgba(71, 85, 105, 0.2));
+        }
+
+        .slide li::before {
+            content: "▶";
+            color: #64748b;
+            font-weight: bold;
+            font-size: 1.2rem;
+            position: absolute;
+            right: 0;
+            filter: drop-shadow(0 1px 2px rgba(100, 116, 139, 0.3));
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 1000;
+            padding: 20px 30px;
+            background: linear-gradient(135deg, rgba(71, 85, 105, 0.9), rgba(100, 116, 139, 0.85), rgba(2, 132, 199, 0.8));
+            border-radius: 50px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 15px 40px rgba(71, 85, 105, 0.3), 0 8px 20px rgba(100, 116, 139, 0.2);
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .nav-dot {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: rgba(219, 234, 254, 0.5);
+            border: 3px solid rgba(219, 234, 254, 0.8);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-dot.active {
+            background: #0284c7;
+            border-color: rgba(226, 232, 240, 0.8);
+        }
+
+        .nav-dot:hover {
+            background: #94a3b8;
+        }
+
+        .controls {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            z-index: 1000;
+            display: flex;
+            gap: 15px;
+        }
+
+        .control-btn {
+            background: linear-gradient(135deg, #475569 0%, #64748b 40%, #94a3b8 80%, #0284c7 100%);
+            border: none;
+            color: rgba(255,255,255,0.95);
+            padding: 18px 30px;
+            border-radius: 20px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Heebo', Arial, sans-serif;
+            box-shadow: 0 10px 25px rgba(71, 85, 105, 0.3), 0 5px 15px rgba(100, 116, 139, 0.2);
+            border: 2px solid rgba(255,255,255,0.2);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            text-shadow: 0 1px 3px rgba(30, 41, 59, 0.4);
+        }
+
+        .control-btn:hover {
+            background: linear-gradient(135deg, #94a3b8 0%, #cbd5e1 40%, #e2e8f0 80%, #0284c7 100%);
+            box-shadow: 0 8px 20px rgba(100, 116, 139, 0.25), 0 4px 12px rgba(2, 132, 199, 0.15);
+            border-color: rgba(226, 232, 240, 0.6);
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 550px;
+            margin: 4rem 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.8) 50%, rgba(226, 232, 240, 0.7) 100%);
+            border-radius: 18px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08), 0 5px 15px rgba(100, 116, 139, 0.12);
+            border: 2px solid rgba(148, 163, 184, 0.25);
+            backdrop-filter: blur(8px);
+            position: relative;
+            overflow: hidden;
+        }
+
+
+        .image-container {
+            text-align: center;
+            margin: 5rem 0;
+            width: 100%;
+            max-width: 1500px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .image-container img {
+            width: auto;
+            max-width: 85vw;
+            height: auto;
+            max-height: 75vh;
+            border-radius: 18px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.08), 0 6px 18px rgba(100, 116, 139, 0.1);
+            object-fit: contain;
+            margin: 0 auto;
+            display: block;
+            border: 3px solid rgba(148, 163, 184, 0.25);
+            backdrop-filter: blur(6px);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 50%, rgba(226, 232, 240, 0.8) 100%);
+            padding: 20px;
+        }
+
+        .image-container img:hover {
+            box-shadow: 0 15px 30px rgba(0,0,0,0.12), 0 8px 18px rgba(100, 116, 139, 0.15);
+            border-color: rgba(2, 132, 199, 0.4);
+        }
+
+        .timeline-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 4rem 0;
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .timeline-line {
+            position: absolute;
+            top: 50%;
+            left: 8%;
+            right: 8%;
+            height: 8px;
+            background: linear-gradient(to left, #64748b 0%, #94a3b8 25%, #cbd5e1 50%, #e2e8f0 75%, #0284c7 100%);
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(100, 116, 139, 0.3), 0 2px 6px rgba(2, 132, 199, 0.2);
+        }
+
+        .timeline-item {
+            background: linear-gradient(135deg, rgba(219, 234, 254, 0.5) 0%, rgba(147, 197, 253, 0.4) 50%, rgba(96, 165, 250, 0.35) 100%);
+            padding: 3rem;
+            border-radius: 25px;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.15), 0 10px 40px rgba(59, 130, 246, 0.2);
+            z-index: 10;
+            position: relative;
+            width: 320px;
+            text-align: center;
+            border: 3px solid rgba(59, 130, 246, 0.6);
+            backdrop-filter: blur(20px);
+            overflow: hidden;
+        }
+
+
+        .timeline-item:hover {
+            box-shadow: 0 12px 25px rgba(0,0,0,0.12), 0 6px 15px rgba(100, 116, 139, 0.15);
+            border-color: #0284c7;
+        }
+
+
+        .timeline-item h4 {
+            background: linear-gradient(135deg, #0c4a6e 0%, #0284c7 50%, #0ea5e9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 1.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 2px 4px rgba(14, 165, 233, 0.2));
+        }
+
+        .timeline-item p {
+            font-size: 1.2rem;
+            color: #1e293b;
+            text-align: center;
+            margin-bottom: 0;
+            font-weight: 600;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2.5rem;
+            margin: 3rem 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.8) 50%, rgba(226, 232, 240, 0.7) 100%);
+            padding: 3.5rem 2.5rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1), 0 5px 15px rgba(100, 116, 139, 0.12);
+            border: 2px solid rgba(148, 163, 184, 0.3);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(8px);
+        }
+
+
+        .stat-card:hover {
+            box-shadow: 0 12px 25px rgba(0,0,0,0.12), 0 6px 15px rgba(100, 116, 139, 0.15);
+            border-color: rgba(2, 132, 199, 0.5);
+        }
+
+
+
+        .stat-number {
+            font-size: 4.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #475569 0%, #64748b 40%, #94a3b8 80%, #0284c7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: block;
+            margin-bottom: 1.2rem;
+            text-shadow: 0 2px 4px rgba(100, 116, 139, 0.2);
+            position: relative;
+            filter: drop-shadow(0 1px 3px rgba(71, 85, 105, 0.15));
+        }
+
+        .stat-number::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #64748b 0%, #94a3b8 50%, #0284c7 100%);
+            border-radius: 2px;
+            box-shadow: 0 1px 4px rgba(100, 116, 139, 0.3);
+        }
+
+        .stat-label {
+            font-size: 1.4rem;
+            color: #475569;
+            font-weight: 700;
+            line-height: 1.4;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #64748b 0%, #94a3b8 25%, #cbd5e1 50%, #0284c7 100%);
+            color: rgba(255,255,255,0.98);
+            padding: 3.5rem;
+            border-radius: 20px;
+            margin: 3rem 0;
+            text-align: center;
+            box-shadow: 0 12px 30px rgba(100, 116, 139, 0.2), 0 6px 18px rgba(2, 132, 199, 0.15);
+            position: relative;
+            overflow: hidden;
+            border: 2px solid rgba(255,255,255,0.3);
+            backdrop-filter: blur(8px);
+        }
+
+
+
+        .highlight-box h3 {
+            color: rgba(255,255,255,0.95);
+            margin-bottom: 1.5rem;
+            font-size: 2.4rem;
+            font-weight: 800;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin: 3rem 0;
+        }
+
+        .tech-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 50%, rgba(226, 232, 240, 0.8) 100%);
+            padding: 3rem;
+            border-radius: 18px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08), 0 4px 12px rgba(100, 116, 139, 0.1);
+            border-right: 5px solid #64748b;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(6px);
+            border: 2px solid rgba(148, 163, 184, 0.2);
+        }
+
+
+        .tech-card:hover {
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1), 0 5px 12px rgba(100, 116, 139, 0.12);
+            border-right-color: #0284c7;
+            border-color: rgba(2, 132, 199, 0.4);
+        }
+
+
+
+        .tech-card h4 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #0c4a6e 0%, #0284c7 50%, #0ea5e9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1.3rem;
+            font-weight: 900;
+            position: relative;
+            filter: drop-shadow(0 2px 4px rgba(14, 165, 233, 0.2));
+        }
+
+        .fade-in {
+            opacity: 1;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+        }
+
+
+        .slide-counter {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, #475569 0%, #64748b 50%, #0ea5e9 100%);
+            color: rgba(255,255,255,0.95);
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(5px);
+            z-index: 10;
+            text-shadow: 0 1px 2px rgba(30, 41, 59, 0.3);
+        }
+
+        .slide-counter:hover {
+            box-shadow: 0 12px 25px rgba(100, 116, 139, 0.3), 0 6px 15px rgba(2, 132, 199, 0.2);
+            background: linear-gradient(135deg, #64748b, #94a3b8, #cbd5e1, #0284c7);
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 40px 20px 80px 20px;
+                min-height: 180vh;
+            }
+            
+            .slide h1 { font-size: 2.5rem; }
+            .slide h2 { font-size: 2rem; }
+            .slide h3 { font-size: 1.6rem; }
+            
+            .content-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+            }
+            
+            .stat-number { font-size: 2.5rem; }
+            .stat-label { font-size: 1rem; }
+            
+            .tech-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .timeline-container {
+                flex-direction: column;
+                gap: 2rem;
+            }
+            
+            .timeline-line { display: none; }
+            
+            .timeline-item {
+                width: 100%;
+                max-width: 350px;
+            }
+            
+            .controls {
+                top: 15px;
+                left: 15px;
+                flex-direction: column;
+            }
+
+            .image-container {
+                margin: 2rem 0;
+            }
+
+            .image-container img {
+                width: auto !important;
+                max-width: 90vw !important;
+                height: auto !important;
+                max-height: 60vh !important;
+                object-fit: contain !important;
+                padding: 20px !important;
+                border: 3px solid rgba(148, 163, 184, 0.3) !important;
+                background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%) !important;
+                border-radius: 18px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Professional Watermark -->
+    <div style="position: fixed; bottom: 10px; left: 10px; z-index: 999; opacity: 0.6; font-size: 0.9rem; color: rgba(100, 116, 139, 0.7); font-family: 'Heebo'; font-weight: 600;">
+        Enterprise AI Solutions © 2025
+    </div>
+    
+    <div class="presentation-container">
+        <!-- Slide Navigation Controls -->
+        <div class="controls">
+            <button class="control-btn" onclick="previousSlide()">◀ הקודם</button>
+            <button class="control-btn" onclick="nextSlide()">הבא ▶</button>
+        </div>
+
+        <!-- Navigation Dots -->
+        <div class="navigation">
+            <div class="nav-dot active" onclick="goToSlide(0)"></div>
+            <div class="nav-dot" onclick="goToSlide(1)"></div>
+            <div class="nav-dot" onclick="goToSlide(2)"></div>
+            <div class="nav-dot" onclick="goToSlide(3)"></div>
+            <div class="nav-dot" onclick="goToSlide(4)"></div>
+            <div class="nav-dot" onclick="goToSlide(5)"></div>
+            <div class="nav-dot" onclick="goToSlide(6)"></div>
+            <div class="nav-dot" onclick="goToSlide(7)"></div>
+            <div class="nav-dot" onclick="goToSlide(8)"></div>
+        </div>
+
+        <!-- Slide 1: Title Slide -->
+        <div class="slide active">
+            <div class="slide-counter">1 / 9</div>
+            <h1 class="fade-in">AI לחברת ביטוח רפואי</h1>
+            <div class="highlight-box fade-in">
+                <h3>פתרון טכנולוגי מהפכני לעיבוד מסמכים רפואיים</h3>
+                <p style="font-size: 1.6rem; margin-top: 1.5rem;">
+                    מערכת RAG מתקדמת המשלבת OCR חכם, בינה מלאכותית ועיבוד שפה טבעית לביטוח רפואי מדויק ויעיל
+                </p>
+            </div>
+
+            <div class="image-container fade-in">
+                <img src="PNG/Generated Image September 10, 2025 - 8_43PM.png" alt="AI Medical Insurance System">
+            </div>
+
+            <div class="stats-container fade-in">
+                <div class="stat-card">
+                    <span class="stat-number">95%</span>
+                    <div class="stat-label">דיוק בזיהוי טקסט</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">70%</span>
+                    <div class="stat-label">חיסכון בזמן עיבוד</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">100%</span>
+                    <div class="stat-label">אבטחת מידע פנימי</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">3</span>
+                    <div class="stat-label">חודשי פיתוח</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: מה זה RAG -->
+        <div class="slide">
+            <div class="slide-counter">2 / 9</div>
+            <h2 class="fade-in">מה זה RAG?</h2>
+            
+            <div class="full-width-content fade-in">
+                <p style="font-size: 1.8rem; text-align: center; margin-bottom: 2rem; color: #1e40af; font-weight: 600;">
+                    <strong>Retrieval-Augmented Generation (RAG)</strong> - טכנולוגיה מתקדמת המשלבת חיפוש מידע מדויק עם יצירת תשובות אינטליגנטיות
+                </p>
+            </div>
+
+            <div class="content-grid fade-in">
+                <div class="content-box">
+                    <h3>יתרונות RAG למערכות פנימיות:</h3>
+                    <ul>
+                        <li><strong>דיוק ואמינות מקסימליים</strong> - תשובות מבוססות אך ורק על מסמכים פנימיים מאומתים של החברה</li>
+                        <li><strong>מניעת "הזיות" AI</strong> - כל תשובה מגובה בציטוטים והפניות למקורות מדויקים</li>
+                        <li><strong>שמירה על פרטיות ואבטחת מידע</strong> - כל המידע נשאר בתוך המערכות הפנימיות</li>
+                        <li><strong>עמידה ברגולציות</strong> - תאימות מלאה ל-GDPR, HIPAA וחוקי אבטחת מידע</li>
+                    </ul>
+                </div>
+                <div class="content-box">
+                    <h3>יעילות תפעולית מתקדמת:</h3>
+                    <ul>
+                        <li><strong>הקשר רלוונטי ועדכני</strong> - עבודה עם המידע העדכני ביותר במאגרים הפנימיים</li>
+                        <li><strong>אוטומציה של תהליכים מורכבים</strong> - ניתוח תביעות וחיסכון זמן יקר לעובדים</li>
+                        <li><strong>שקיפות מלאה</strong> - מעקב אחר מקור כל מידע ובסיס כל החלטה</li>
+                        <li><strong>למידה מתמשכת</strong> - שיפור ביצועים לאורך זמן מנתוני החברה</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="image-container fade-in">
+                <img src="PNG/hebrew_rag_pipeline_vis.png" alt="RAG Pipeline Visualization">
+            </div>
+
+            <div class="image-container fade-in">
+                <img src="PNG/Generated Image September 10, 2025 - 10_20PM.png" alt="RAG Technology Architecture">
+            </div>
+
+            <div class="chart-container fade-in">
+                <div id="rag-comparison-chart"></div>
+            </div>
+        </div>
+
+        <!-- Slide 3: מערכת OCR מתקדמת -->
+        <div class="slide">
+            <div class="slide-counter">3 / 9</div>
+            <h2 class="fade-in">מערכת OCR מדויקת ועוצמתי</h2>
+            
+            <div class="content-grid fade-in">
+                <div class="content-box">
+                    <h3>יכולות טכנולוגיות מתקדמות:</h3>
+                    <ul>
+                        <li><strong>עיבוד מסמכים לא מסודרים</strong> - זיהוי מצוין ממסמכים סרוקים, צילומים באיכות נמוכה וקבצים פגומים</li>
+                        <li><strong>זיהוי כתב יד רפואי מתקדם</strong> - המרת הערות רופאים וכתב יד למחשב באמצעות מודלים חכמים</li>
+                        <li><strong>עמידות מלאה לרעשים ויזואליים</strong> - התמודדות מצוינת עם צללים, קמטים, חותמות ורעשים</li>
+                        <li><strong>תמיכה מושלמת בעברית</strong> - עיבוד ניקוד, כתיב חסר, גופנים מגוונים ומושגים רפואיים</li>
+                    </ul>
+                </div>
+                <div class="content-box">
+                    <h3>ביצועים ואמינות יוצאי דופן:</h3>
+                    <ul>
+                        <li><strong>דיוק גבוה מאוד</strong> - 95%+ בזיהוי טקסט מודפס עברי ורפואי</li>
+                        <li><strong>מהירות עיבוד מרשימה</strong> - עד 1000+ עמודים בשעה עם GPU מתאים</li>
+                        <li><strong>אוטומציה מלאה</strong> - עיבוד אצווה ללא צורך בהתערבות אנושית</li>
+                        <li><strong>אימות איכות אוטומטי</strong> - בדיקת דיוק ותיקון שגיאות לכל מסמך</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="image-container fade-in">
+                <img src="PNG/Generated Image September 10, 2025 - 10_15PM.png" alt="OCR Capabilities">
+            </div>
+
+            <div class="chart-container fade-in">
+                <div id="ocr-accuracy-chart"></div>
+            </div>
+
+            <div class="highlight-box fade-in">
+                <h3>הוכחת יכולות במסמכים רפואיים אמיתיים</h3>
+                <p style="font-size: 1.4rem;">המערכת נבדקה בהצלחה רבה על כמאה מסמכים רפואיים מורכבים, כולל דוחות מעבדה, חוות דעת רפואיות מפורטות, וטפסי תביעות מסובכים</p>
+            </div>
+        </div>
+
+        <!-- Slide 4: Fine-Tuning מול אימון מאפס -->
+        <div class="slide">
+            <div class="slide-counter">4 / 9</div>
+            <h2 class="fade-in">Fine-Tuning במקום אימון מודל מאפס</h2>
+            
+            <div class="full-width-content fade-in">
+                <p style="font-size: 1.6rem; text-align: center; margin-bottom: 2rem; color: #1e40af; font-weight: 600;">
+                    גישה חכמה וחסכונית - במקום לבנות מודל מאפס, אנו מתאימים מודל קיים לצרכים הספציפיים של החברה         
+                </p>
+            </div>
+
+            <div class="content-grid fade-in">
+                <div class="content-box" style="border-right-color: #ef4444; background: linear-gradient(135deg, rgba(239, 68, 68, 0.05), rgba(248, 113, 113, 0.05));">
+                    <h3 style="color: #ef4444;">❌ אימון מודל מאפס - הדרך הקשה</h3>
+                    <ul>
+                        <li><strong>זמן פיתוח:</strong> 6-12 חודשים של עבודה אינטנסיבית</li>
+                        <li><strong>עלות גבוהה:</strong> יכול גם לטפס למיליוני שקלים בחומרה ופיתוח</li>
+                        <li><strong>נתונים נדרשים:</strong> מיליארדי מסמכים לאימון</li>
+                        <li><strong>חומרה:</strong> מאות GPU מתקדמים וחדרי שרתים</li>
+                        <li><strong>סיכון כישלון:</strong> גבוה מאוד - אין ערובה להצלחה</li>
+                        <li><strong>צוות פיתוח:</strong> עשרות מפתחים ומומחים</li>
+                    </ul>
+                </div>
+                <div class="content-box" style="border-right-color: #10b981; background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(52, 211, 153, 0.05));">
+                    <h3 style="color: #10b981;">✅ Fine-Tuning - הדרך החכמה</h3>
+                    <ul>
+                        <li><strong>זמן פיתוח:</strong>  3-7 שבועות בלבד לאימון המודל</li>
+                        <li><strong>עלות נמוכה:</strong>  - חיסכון של 95%</li>
+                        <li><strong>נתונים נדרשים:</strong> מסמכים ארגוניים ספציפיים</li>
+                        <li><strong>חומרה:</strong> GPU או שניים מתאים לצרכים</li>
+                        <li><strong>סיכון כישלון:</strong> נמוך מאוד - בנייה על בסיס מוכח</li>
+                        <li><strong>צוות פיתוח:</strong> מפתח יחיד מנוסה</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="chart-container fade-in">
+                <div id="cost-comparison-chart"></div>
+            </div>
+
+            <div class="image-container fade-in">
+                <img src="PNG/Generated Image September 10, 2025 - 10_18PM.png" alt="Fine-Tuning Process Illustration">
+            </div>
+
+            <div class="highlight-box fade-in">
+                <h3>יתרונות Fine-Tuning לביטוח רפואי</h3>
+                <div class="tech-grid" style="margin-top: 2rem;">
+                    <div class="tech-card">
+                        <h4> התאמה לטרמינולוגיה</h4>
+                        <p>המודל לומד את השפה הרפואי-ביטוחי הייחודי לארגון, כולל קיצורים ומושגים מקצועיים מדויקים</p>
+                    </div>
+                    <div class="tech-card">
+                        <h4> שיפור מתמיד</h4>
+                        <p>עדכון המודל עם נתונים חדשים בקלות, הבטחת רלוונטיות מתמשכת לאורך זמן</p>
+                    </div>
+                    <div class="tech-card">
+                        <h4> יעילות כלכלית</h4>
+                        <p>חיסכון משמעותי בהשוואה לפיתוח מודל חדש מאפס</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: מעבר לקיים - הרחבת המערכת -->
+        <div class="slide">
+            <div class="slide-counter">5 / 9</div>
+            <h2 class="fade-in">מעבר למה שכבר קיים - אפשרויות הרחבה</h2>
+            
+            <div class="content-grid fade-in">
+                <div class="content-box">
+                    <h3>🔗 שילוב במערכות קיימות באמצעות API יעודי</h3>
+                    <ul>
+                        <li><strong>אינטגרציה חלקה</strong> - חיבור למערכות ליבה קיימות (CRM, ניהול תביעות) דרך ממשק API מתקדם</li>
+                        <li><strong>תשובות בזמן אמת</strong> - מידע מיידי ומדויק לנציגי שירות לקוחות וחברי צוות</li>
+                        <li><strong>ממשק אינטואיטיבי</strong> - שילוב טבעי בתהליכי העבודה הקיימים ללא שיבוש</li>
+                        <li><strong>דוחות וניתוחים מתקדמים</strong> - מעקב ביצועים מתמיד ושיפור איכות השירות</li>
+                    </ul>
+                </div>
+                <div class="content-box">
+                    <h3>🎤 מערכת ASR למפגשים קליניים</h3>
+                    <ul>
+                        <li><strong>תמלול שיחות אוטומטי</strong> - המרה מדויקת של דיבור לטקסט מובנה ומאורגן</li>
+                        <li><strong>סיכום אינטליגנטי</strong> - זיהוי אוטומטי של נושאים מרכזיים, החלטות ומשימות</li>
+                        <li><strong>עדכון מאגר הידע</strong> - השתלבות אוטומטית של מידע מדובר במערכת ה-RAG</li>
+                        <li><strong>חיפוש במידע קולי</strong> - אפשרות מהירה לחפש ולהיזכר בתוכן שיחות קודמות</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="image-container fade-in">
+                <img src="PNG/Generated Image September 10, 2025 - 6_39PM.png" alt="System Integration">
+            </div>
+
+            <div class="chart-container fade-in">
+                <div id="integration-timeline-chart"></div>
+            </div>
+
+            <div class="highlight-box fade-in">
+                <h3>דוגמה לשימוש במערכת משולבת מתקדמת</h3>
+                <p style="font-size: 1.5rem;">נציג שירות לקוחות פונה למערכת, מקליד שאילתה קצרה ומקבל תוך שניות ספורות סיכום מלא ומפורט של היסטוריה רפואית, תביעות קודמות, והמלצות מבוססות נתונים לטיפול אופטימלי</p>
+            </div>
+        </div>
+
+        <!-- Slide 6: ניתוח צרכי חומרה -->
+        <div class="slide">
+            <div class="slide-counter">6 / 9</div>
+            <h2 class="fade-in">ניתוח צרכי חומרה מתקדמת</h2>
+            
+            <div class="content-grid fade-in">
+                <div class="content-box">
+                    <h3>⚡ דרישות חומרה מומלצות לביצועים אופטימליים:</h3>
+                    <ul>
+                        <li><strong>יחידת עיבוד גרפית (GPU):</strong> NVIDIA A100, H100 או דגם מתקדם דומה</li>
+                        <li><strong>זיכרון VRAM:</strong> 64GB לפחות - קריטי להרצת מודלי OCR ו-Fine-Tuning</li>
+                        <li><strong>מעבד CPU:</strong> מעבד רב-ליבות מודרני (32+ ליבות מומלץ)</li>
+                        <li><strong>זיכרון RAM:</strong> 128GB לפחות לעיבוד מקבילי ויעיל</li>
+                        <li><strong>אחסון מהיר:</strong> כונן SSD מהיר (NVMe) לגישה מיידית למודלים ונתונים</li>
+                    </ul>
+                </div>
+                <div class="content-box">
+                    <h3>📈 ביצועים צפויים ומדידים:</h3>
+                    <ul>
+                        <li><strong>עיבוד OCR:</strong> 1000+ עמודים בשעה בדיוק גבוה</li>
+                        <li><strong>זמן תגובה RAG:</strong> 2-5 שניות לשאילתות מורכבות</li>
+                        <li><strong>דיוק זיהוי טקסט:</strong> 95%+ לטקסט מודפס עברי</li>
+                        <li><strong>קיבולת משתמשים:</strong> 100+ משתמשים בו זמנית</li>
+                        <li><strong>זמינות מערכת:</strong> 99.9% uptime עם יתירות מתאימה</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="image-container fade-in">
+                <img src="PNG/Generated Image September 10, 2025 - 10_26PM.png" alt="Hardware Architecture">
+            </div>
+
+            <div class="chart-container fade-in">
+                <div id="hardware-performance-chart"></div>
+            </div>
+
+            <div class="highlight-box fade-in">
+                <h3>תמורה מעולה להשקעה</h3>
+                <p style="font-size: 1.4rem;">השקעה חד-פעמית בחומרה מתאימה, ככל הנראה תחזיר את עצמה תוך זמן קצר מאוד חודשים באמצעות חיסכון משמעותי בעבודת כח אדם, שיפור יעילות התהליכים ודיוק רב בעיבוד תביעות</p>
+            </div>
+        </div>
+
+        <!-- Slide 7: לוח זמנים מפורט -->
+        <div class="slide">
+            <div class="slide-counter">7 / 9</div>
+            <h2 class="fade-in">לוח זמנים ושלבי הפרויקט</h2>
+            
+            <div class="full-width-content fade-in">
+                <p style="font-size: 1.8rem; text-align: center; margin-bottom: 2rem; color: #1e40af; font-weight: 700;">
+                    <strong>כ-3 חודשי פיתוח מלאים</strong> - כל השלבים מבוצעים על ידי מפתח יחיד מנוסה
+                </p>
+                <p style="font-size: 1.4rem; text-align: center; color: #7c3aed; font-weight: 600;">
+                    (אני עושה הכל לבד - יעילות מקסימלית ותקשורת ישירה)
+                </p>
+            </div>
+
+            <div class="timeline-container fade-in">
+                <div class="timeline-line"></div>
+                <div class="timeline-item">
+                    <h4>חודש 1-1.5</h4>
+                    <p><strong>שלב א' - התחלה:</strong><br>איסוף מסמכים והקמת תשתית</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>חודש 1.5-2</h4>
+                    <p><strong>שלב א' - פיתוח:</strong><br>פיתוח מערכת OCR אוטונומית ופיתוח מערכת RAG</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>חודש 3</h4>
+                    <p><strong>שלב ב':</strong><br>אינטגרציה ובחינת דיוק המערכת</p>
+                </div>
+            </div>
+
+            <div class="content-grid fade-in">
+                <div class="content-box">
+                    <h3>📋 שלב א': פיתוח המערכת (חודש וחצי-חודשיים)</h3>
+                    <ul>
+                        <li><strong>איסוף והגדרת דרישות מפורטות:</strong> ניתוח עמיק של צרכי החברה הספציפיים</li>
+                        <li><strong>הקמת תשתית בטוחה:</strong> הגדרת סביבות פיתוח ופרודקשן מתקדמות</li>
+                        <li><strong>פיתוח רכיב OCR מתאים:</strong> התאמה מדויקת לסוגי מסמכים של החברה</li>
+                        <li><strong>בניית מערכת RAG מלאה:</strong> הקמת מאגר נתונים וקטורי ואינטגרציה עם מודל השפה</li>
+                        <li><strong>פיתוח API ראשוני:</strong> יצירת ממשק תכנות מקצועי לאינטגרציה</li>
+                    </ul>
+                </div>
+                <div class="content-box">
+                    <h3>🔧 שלב ב': אינטגרציה ובחינת דיוק (כחודש)</h3>
+                    <ul>
+                        <li><strong>אינטגרציה מלאה:</strong> חיבור המערכת למערכות הליבה של החברה</li>
+                        <li><strong>Fine-Tuning מדויק:</strong> אימון המודל על נתונים פנימיים לשיפור דיוק</li>
+                        <li><strong>בדיקות וולידציה מקיפות:</strong> סבבי בדיקות יסודיים לבחינת דיוק ומהירות</li>
+                        <li><strong>הדרכה וליווי מקצועי:</strong> הדרכת הצוותים וליווי בהשקה ראשונית</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="chart-container fade-in">
+                <div id="project-timeline-chart"></div>
+            </div>
+
+            <div class="image-container fade-in">
+                <img src="PNG/Generated Image September 10, 2025 - 10_05PM.png" alt="Project Development Timeline">
+            </div>
+
+            <div class="highlight-box fade-in">
+                <h3> יתרון הפיתוח על ידי מפתח יחיד מנוסה</h3>
+                <p style="font-size: 1.4rem;">ניסיון מוכח ועמוק, תקשורת ישירה וחלקה עם הלקוח, קבלת החלטות מהירה ויעילה, ואחריות מלאה ואישית על איכות התוצר הסופי</p>
+            </div>
+        </div>
+
+        <!-- Slide 8: תמורה להשקעה -->
+        <div class="slide">
+            <div class="slide-counter">8 / 9</div>
+            <h2 class="fade-in">תמורה מעולה להשקעה וערך עסקי</h2>
+            
+            <div class="stats-container fade-in">
+                <div class="stat-card">
+                    <span class="stat-number">75%</span>
+                    <div class="stat-label">חיסכון בזמן עיבוד תביעות</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">90%</span>
+                    <div class="stat-label">הפחתת שגיאות אנוש</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">6-12</span>
+                    <div class="stat-label">חודשים להחזר השקעה</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">24/7</span>
+                    <div class="stat-label">זמינות מערכת רצופה</div>
+                </div>
+            </div>
+
+            <div class="content-grid fade-in">
+                <div class="content-box">
+                    <h3>💼 יתרונות עסקיים מיידיים:</h3>
+                    <ul>
+                        <li><strong>שיפור דרמטי בחוויית לקוח</strong> - תגובות מהירות, מדויקות ומקצועיות יותר</li>
+                        <li><strong>הפחתה משמעותי בעומס עבודה</strong> - אוטומציה של משימות חוזרות ומייגעות</li>
+                        <li><strong>שיפור איכות השירות</strong> -בסיס מידע אחיד, מעודכן ונגיש </li>
+                        <li><strong>עמידה מלאה ברגולציה</strong> - תיעוד מושלם וניתן למעקב</li>
+                    </ul>
+                </div>
+                <div class="content-box">
+                    <h3>📈 יתרונות אסטרטגיים ארוכי טווח:</h3>
+                    <ul>
+                        <li><strong>יתרון תחרותי משמעותי</strong> -טכנולוגיה מתקדמת בעולם המדיקל</li>
+                        <li><strong>בסיס איתן לחדשנות עתידית</strong> - פלטפורמה טכנולוגית עם פוטנציאל להרחבות עתידיות</li>
+                        <li><strong>שיפור איכות קבלת החלטות</strong> - תובנות מבוססות נתונים מדויקים</li>
+                        <li><strong>מוכנות מלאה לעתיד</strong> - התאמה לטרנדים טכנולוגיים חדשים</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="chart-container fade-in">
+                <div id="roi-analysis-chart"></div>
+            </div>
+
+            <div class="image-container fade-in">
+                <img src="PNG/Generated Image September 10, 2025 - 8_52PM.png" alt="Business Performance Improvement">
+            </div>
+
+            <div class="highlight-box fade-in">
+                <h3> השקעה חכמה ומחושבת בעתיד</h3>
+                <p style="font-size: 1.4rem;">המערכת לא רק פותרת ביעילות את בעיות היום, אלא גם מכינה את הארגון בצורה מושלמת לאתגרים העתידיים בעולם הביטוח הרפואי הדיגיטלי המתפתח</p>
+            </div>
+        </div>
+
+        <!-- Slide 9: סיכום וצעדים הבאים -->
+        <div class="slide">
+            <div class="slide-counter">9 / 9</div>
+            <h2 class="fade-in">סיכום מקיף וצעדים הבאים</h2>
+            
+            <div class="highlight-box fade-in">
+                <h3> למה לבחור במערכת RAG המתקדמת שלנו?</h3>
+                <p style="font-size: 1.6rem;">
+                    פתרון טכנולוגי מתקדם, מוכח בפועל ומותאם במיוחד לצרכים הייחודיים של הביטוח הרפואי בישראל
+                </p>
+            </div>
+
+            <div class="tech-grid fade-in">
+                <div class="tech-card">
+                    <h4> טכנולוגיה מובילה עולמית</h4>
+                    <p>שילוב חדשני ומתקדם של OCR חכם, מערכת RAG ובינה מלאכותית מותאמת</p>
+                </div>
+                <div class="tech-card">
+                    <h4>🛡️ אבטחה מקסימלית ובלתי מתפשרת</h4>
+                    <p>עמידה בכל הרגולציות הנדרשות ושמירה מוחלטת על פרטיות הנתונים הרגישים</p>
+                </div>
+                <div class="tech-card">
+                    <h4>⚡ יעילות מוכחת וביצועים גבוהים</h4>
+                    <p>שיפור דרמטי ומדיד במהירות ודיוק עיבוד המידע הרפואי</p>
+                </div>
+                <div class="tech-card">
+                    <h4> התאמה מושלמת לארגון</h4>
+                    <p>פיתוח ייעודי המותאם לצרכים הספציפיים והייחודיים של החברה</p>
+                </div>
+            </div>
+
+            <div class="image-container fade-in">
+                <img src="PNG/Generated Image September 10, 2025 - 10_31PM.png" alt="Future of Medical Insurance Technology">
+            </div>
+
+            <div class="stats-container fade-in">
+                <div class="stat-card">
+                    <span class="stat-number">100%</span>
+                    <div class="stat-label">מחויבות מלאה להצלחתכם</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">24/7</span>
+                    <div class="stat-label">תמיכה ומעקב רצוף</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">∞</span>
+                    <div class="stat-label">אפשרויות פיתוח עתידיות</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">1</span>
+                    <div class="stat-label">מפתח מנוסה ומקצועי</div>
+                </div>
+            </div>
+
+            <div class="highlight-box fade-in" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                <h3>🤝 מוכנים לשינוי מהפכני?</h3>
+                <p style="font-size: 1.6rem; margin-top: 1rem;">
+                    בואו נתחיל יחד מסע מרגש של שיפור וחדשנות טכנולוגית שיקדם את החברה לחזית התחום
+                </p>
+                <p style="font-size: 1.3rem; margin-top: 1rem; opacity: 0.9;">
+                    השקעה חכמה היום = הצלחה מובטחת מחר
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Presentation Navigation System
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const navDots = document.querySelectorAll('.nav-dot');
+        const totalSlides = slides.length;
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            navDots[currentSlide].classList.remove('active');
+            
+            currentSlide = (n + totalSlides) % totalSlides;
+            
+            slides[currentSlide].classList.add('active');
+            navDots[currentSlide].classList.add('active');
+            
+            // No animations - instant display
+            
+            // Generate charts for current slide
+            generateChartsForSlide(currentSlide);
+        }
+
+        function nextSlide() { showSlide(currentSlide + 1); }
+        function previousSlide() { showSlide(currentSlide - 1); }
+        function goToSlide(n) { showSlide(n); }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                previousSlide();
+            } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                nextSlide();
+            }
+        });
+
+        // Chart Generation Functions
+        function generateChartsForSlide(slideIndex) {
+            switch(slideIndex) {
+                case 1: generateRAGComparisonChart(); break;
+                case 2: generateOCRAccuracyChart(); break;
+                case 3: generateCostComparisonChart(); break;
+                case 4: generateIntegrationExpansionChart(); break;
+                case 5: generateHardwarePerformanceChart(); break;
+                case 6: generateProjectTimelineChart(); break;
+                case 7: generateROIAnalysisChart(); break;
+            }
+        }
+
+        function generateRAGComparisonChart() {
+            const data = [{
+                x: ['דיוק מידע', 'מהירות תגובה', 'אבטחת נתונים', 'עלות תחזוקה', 'גמישות עדכון'],
+                y: [95, 88, 99, 25, 92],
+                type: 'bar',
+                name: 'מערכת RAG',
+                marker: { color: '#1e40af' }
+            }, {
+                x: ['דיוק מידע', 'מהירות תגובה', 'אבטחת נתונים', 'עלות תחזוקה', 'גמישות עדכון'],
+                y: [65, 72, 45, 85, 35],
+                type: 'bar',
+                name: 'מערכות מסורתיות',
+                marker: { color: '#9ca3af' }
+            }];
+
+            const layout = {
+                title: { text: 'השוואה: מערכת RAG מתקדמת מול מערכות מסורתיות', font: { size: 18, family: 'Heebo' } },
+                xaxis: { title: 'פרמטרי ביצועים', font: { family: 'Heebo' } },
+                yaxis: { title: 'ציון ביצועים (%)', font: { family: 'Heebo' }, range: [0, 100] },
+                font: { family: 'Heebo' },
+                plot_bgcolor: 'rgba(255,255,255,0.8)',
+                paper_bgcolor: 'rgba(248,250,252,0.9)'
+            };
+
+            Plotly.newPlot('rag-comparison-chart', data, layout, {responsive: true});
+        }
+
+        function generateOCRAccuracyChart() {
+            const expansionAreas = [
+                { name: 'מערכת ASR למפגשים קליניים', description: 'תמלול אוטומטי של שיחות רפואיות וסיכום אינטליגנטי', color: '#7c3aed' },
+                { name: 'אינטגרציה עם מערכות CRM', description: 'חיבור מלא למערכות ניהול לקוחות קיימות', color: '#1e40af' },
+                { name: 'אפליקציה ניידת למשתמשים', description: 'גישה נוחה ומהירה ממכשירים ניידים', color: '#ef4444' },
+                { name: 'דוחות אנליטיים מתקדמים', description: 'ניתוח נתונים עמוק ותובנות עסקיות', color: '#10b981' },
+                { name: 'זיהוי קולי ופקודות חכמות', description: 'בקרה קולית ואוטומציה מתקדמת', color: '#8b5cf6' },
+                { name: 'תמיכת API מתקדמת', description: 'ממשקי תכנות יישומים לאינטגרציה עם מערכות חיצוניות', color: '#f59e0b' }
+            ];
+
+            const container = document.getElementById('ocr-accuracy-chart');
+            
+            const listHTML = `
+                <div style="
+                    height: 100%; 
+                    display: flex; 
+                    flex-direction: column;
+                    padding: 0;
+                    margin: 0;
+                    overflow: hidden;
+                ">
+                    <div style="text-align: center; margin-bottom: 1rem;">
+                        <h3 style="font-size: 1.6rem; color: #1e40af; margin-bottom: 1rem; font-family: 'Heebo';">
+                            אפשרויות הרחבה עתידיות
+                        </h3>
+                    </div>
+                    <div style="
+                        display: grid; 
+                        grid-template-columns: 1fr 1fr; 
+                        gap: 1rem; 
+                        width: 100%;
+                        height: 100%;
+                        max-height: 350px;
+                        overflow: visible;
+                    ">
+                        ${expansionAreas.map(area => `
+                            <div style="
+                                background: white; 
+                                padding: 1.2rem; 
+                                border-radius: 12px; 
+                                box-shadow: 0 8px 25px rgba(0,0,0,0.1); 
+                                border-right: 5px solid ${area.color};
+                                cursor: pointer;
+                                height: fit-content;
+                                min-height: 100px;
+                            ">
+                                <div style="display: flex; align-items: flex-start; justify-content: space-between;">
+                                    <div style="flex: 1;">
+                                        <h4 style="
+                                            font-size: 1.1rem; 
+                                            color: ${area.color}; 
+                                            margin-bottom: 0.5rem; 
+                                            font-weight: 700;
+                                            font-family: 'Heebo';
+                                            line-height: 1.3;
+                                        ">${area.name}</h4>
+                                        <p style="
+                                            font-size: 0.9rem; 
+                                            color: #6b7280; 
+                                            margin: 0;
+                                            font-family: 'Heebo';
+                                            line-height: 1.4;
+                                        ">${area.description}</p>
+                                    </div>
+                                    <div style="
+                                        width: 12px; 
+                                        height: 12px; 
+                                        border-radius: 50%; 
+                                        background: ${area.color};
+                                        margin-right: 0.8rem;
+                                        margin-top: 0.2rem;
+                                        flex-shrink: 0;
+                                    "></div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML = listHTML;
+        }
+
+        function generateCostComparisonChart() {
+            const categories = ['עלות פיתוח (אלפי ₪)', 'זמן פיתוח (חודשים)', 'סיכון פרויקט (%)', 'צוות נדרש (אנשים)'];
+            
+            const data = [{
+                r: [5000, 12, 80, 25],
+                theta: categories,
+                type: 'scatterpolar',
+                fill: 'toself',
+                name: 'פיתוח מאפס',
+                line: { color: '#ef4444' },
+                fillcolor: 'rgba(239, 68, 68, 0.3)'
+            }, {
+                r: [150, 3, 15, 1],
+                theta: categories,
+                type: 'scatterpolar',
+                fill: 'toself',
+                name: 'Fine-Tuning',
+                line: { color: '#10b981' },
+                fillcolor: 'rgba(16, 185, 129, 0.3)'
+            }];
+
+            const layout = {
+                title: { text: 'השוואת עלויות מפורטת: פיתוח מאפס מול Fine-Tuning חכם', font: { size: 18, family: 'Heebo' } },
+                font: { family: 'Heebo' },
+                plot_bgcolor: 'rgba(255,255,255,0.8)',
+                paper_bgcolor: 'rgba(248,250,252,0.9)',
+                polar: { radialaxis: { visible: true, range: [0, 5000] } }
+            };
+
+            Plotly.newPlot('cost-comparison-chart', data, layout, {responsive: true});
+        }
+
+        function generateIntegrationExpansionChart() {
+            const expansionAreas = [
+                { name: 'מערכת ASR למפגשים קליניים', description: 'תמלול אוטומטי של שיחות רפואיות וסיכום אינטליגנטי', color: '#7c3aed' },
+                { name: 'אינטגרציה עם מערכות CRM', description: 'חיבור מלא למערכות ניהול לקוחות קיימות', color: '#1e40af' },
+                { name: 'אפליקציה ניידת למשתמשים', description: 'גישה נוחה ומהירה ממכשירים ניידים', color: '#ef4444' },
+                { name: 'דוחות אנליטיים מתקדמים', description: 'ניתוח נתונים עמוק ותובנות עסקיות', color: '#10b981' },
+                { name: 'זיהוי קולי ופקודות חכמות', description: 'בקרה קולית ואוטומציה מתקדמת', color: '#8b5cf6' },
+                { name: 'תמיכת API מתקדמת', description: 'ממשקי תכנות יישומים לאינטגרציה עם מערכות חיצוניות', color: '#f59e0b' }
+            ];
+
+            const container = document.getElementById('integration-timeline-chart');
+            
+            const listHTML = `
+                <div style="
+                    height: 100%; 
+                    display: flex; 
+                    flex-direction: column;
+                    padding: 0;
+                    margin: 0;
+                    overflow: hidden;
+                ">
+                    <div style="text-align: center; margin-bottom: 1rem;">
+                        <h3 style="font-size: 1.6rem; color: #1e40af; margin-bottom: 1rem; font-family: 'Heebo';">
+                            אפשרויות הרחבה עתידיות
+                        </h3>
+                    </div>
+                    <div style="
+                        display: grid; 
+                        grid-template-columns: 1fr 1fr; 
+                        gap: 1rem; 
+                        width: 100%;
+                        height: 100%;
+                        max-height: 350px;
+                        overflow: visible;
+                    ">
+                        ${expansionAreas.map(area => `
+                            <div style="
+                                background: white; 
+                                padding: 1.2rem; 
+                                border-radius: 12px; 
+                                box-shadow: 0 8px 25px rgba(0,0,0,0.1); 
+                                border-right: 5px solid ${area.color};
+                                cursor: pointer;
+                                height: fit-content;
+                                min-height: 100px;
+                            ">
+                                <div style="display: flex; align-items: flex-start; justify-content: space-between;">
+                                    <div style="flex: 1;">
+                                        <h4 style="
+                                            font-size: 1.1rem; 
+                                            color: ${area.color}; 
+                                            margin-bottom: 0.5rem; 
+                                            font-weight: 700;
+                                            font-family: 'Heebo';
+                                            line-height: 1.3;
+                                        ">${area.name}</h4>
+                                        <p style="
+                                            font-size: 0.9rem; 
+                                            color: #6b7280; 
+                                            margin: 0;
+                                            font-family: 'Heebo';
+                                            line-height: 1.4;
+                                        ">${area.description}</p>
+                                    </div>
+                                    <div style="
+                                        width: 12px; 
+                                        height: 12px; 
+                                        border-radius: 50%; 
+                                        background: ${area.color};
+                                        margin-right: 0.8rem;
+                                        margin-top: 0.2rem;
+                                        flex-shrink: 0;
+                                    "></div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML = listHTML;
+        }
+
+        function generateHardwarePerformanceChart() {
+            // Claims processing accuracy and error reduction data
+            const processTypes = [
+                'טיפול בתביעות רגילות',
+                'זיהוי מסמכים רפואיים', 
+                'אימות נתוני מבוטח',
+                'בדיקת כשירות לכיסוי',
+                'עיבוד טפסים מורכבים',
+                'זיהוי הונאות פוטנציאליות'
+            ];
+
+            const manualAccuracy = [78, 65, 82, 71, 58, 45];
+            const aiAccuracy = [96, 94, 98, 95, 89, 87];
+            const errorReduction = aiAccuracy.map((ai, i) => ((ai - manualAccuracy[i]) / manualAccuracy[i] * 100).toFixed(1));
+
+            const data = [{
+                x: processTypes,
+                y: manualAccuracy,
+                type: 'bar',
+                name: 'עיבוד ידני מסורתי',
+                marker: { 
+                    color: '#ef4444',
+                    opacity: 0.8
+                },
+                hovertemplate: '<b>%{x}</b><br>דיוק: %{y}%<br>שיטה: עיבוד ידני<extra></extra>'
+            }, {
+                x: processTypes,
+                y: aiAccuracy,
+                type: 'bar',
+                name: 'מערכת AI מתקדמת',
+                marker: { 
+                    color: '#10b981',
+                    opacity: 0.9
+                },
+                hovertemplate: '<b>%{x}</b><br>דיוק: %{y}%<br>שיטה: AI מתקדם<br>שיפור: +%{text}%<extra></extra>',
+                text: errorReduction
+            }];
+
+            const layout = {
+                title: { 
+                    text: 'דיוק עיבוד תביעות - השוואה בין שיטות', 
+                    font: { size: 18, family: 'Heebo' } 
+                },
+                xaxis: { 
+                    title: 'סוגי תהליכים', 
+                    font: { family: 'Heebo' },
+                    tickangle: -45
+                },
+                yaxis: { 
+                    title: 'אחוז דיוק (%)', 
+                    font: { family: 'Heebo' },
+                    range: [0, 100]
+                },
+                font: { family: 'Heebo' },
+                plot_bgcolor: 'rgba(255,255,255,0.8)',
+                paper_bgcolor: 'rgba(248,250,252,0.9)',
+                showlegend: true,
+                legend: { 
+                    x: 0.02, 
+                    y: 0.98,
+                    bgcolor: 'rgba(255,255,255,0.9)',
+                    bordercolor: 'rgba(0,0,0,0.2)',
+                    borderwidth: 1,
+                    font: { size: 12 }
+                },
+                barmode: 'group',
+                bargap: 0.3,
+                bargroupgap: 0.1,
+                annotations: [{
+                    text: 'שיפור משמעותי בכל התהליכים',
+                    showarrow: false,
+                    x: 2.5,
+                    y: 85,
+                    font: { 
+                        color: '#1e40af', 
+                        size: 14, 
+                        family: 'Heebo'
+                    },
+                    bgcolor: 'rgba(255,255,255,0.8)',
+                    bordercolor: '#1e40af',
+                    borderwidth: 1
+                }],
+                hovermode: 'x unified'
+            };
+
+            Plotly.newPlot('hardware-performance-chart', data, layout, {responsive: true});
+        }
+
+        function generateProjectTimelineChart() {
+            // Gantt chart data for timeline visualization
+            const tasks = [
+                {
+                    task: 'עיבוד נתונים מקדים',
+                    start: 0,
+                    duration: 3,
+                    color: '#1e40af'
+                },
+                {
+                    task: 'אימון מודל',
+                    start: 3,
+                    duration: 3,
+                    color: '#7c3aed'
+                },
+                {
+                    task: 'אינטגרציית מערכת',
+                    start: 6,
+                    duration: 2.5,
+                    color: '#10b981'
+                },
+                {
+                    task: 'טיפול בשגיאות והערכה',
+                    start: 8.5,
+                    duration: 3.5,
+                    color: '#ef4444'
+                }
+            ];
+
+            const data = tasks.map((task, index) => ({
+                x: [task.start, task.start + task.duration],
+                y: [index, index],
+                mode: 'lines',
+                line: {
+                    color: task.color,
+                    width: 25
+                },
+                name: task.task,
+                hovertemplate: `<b>${task.task}</b><br>אורך: ${task.duration} שבועות<br>שבוע ${task.start + 1}-${task.start + task.duration}<extra></extra>`,
+                showlegend: true
+            }));
+
+            // Add text annotations for each task
+            const annotations = tasks.map((task, index) => ({
+                x: task.start + task.duration / 2,
+                y: index,
+                text: `${task.task}<br>${task.duration} שבועות`,
+                showarrow: false,
+                font: {
+                    color: 'white',
+                    size: 11,
+                    family: 'Heebo'
+                },
+                xanchor: 'center',
+                yanchor: 'middle'
+            }));
+
+            const layout = {
+                title: { 
+                    text: 'לוח זמנים מפורט - 12 שבועות פיתוח (3 חודשים)', 
+                    font: { size: 18, family: 'Heebo' } 
+                },
+                xaxis: { 
+                    title: 'זמן (שבועות)', 
+                    font: { family: 'Heebo' },
+                    range: [-0.5, 12.5],
+                    dtick: 1,
+                    tickvals: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+                    ticktext: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
+                },
+                yaxis: { 
+                    title: 'שלבי פיתוח', 
+                    font: { family: 'Heebo' },
+                    range: [-0.5, 3.5],
+                    tickvals: [0, 1, 2, 3],
+                    ticktext: tasks.map(task => task.task).reverse()
+                },
+                font: { family: 'Heebo' },
+                plot_bgcolor: 'rgba(255,255,255,0.8)',
+                paper_bgcolor: 'rgba(248,250,252,0.9)',
+                annotations: annotations,
+                height: 400,
+                margin: { l: 200, r: 50, t: 80, b: 80 },
+                hovermode: 'closest'
+            };
+
+            Plotly.newPlot('project-timeline-chart', data, layout, {responsive: true});
+        }
+
+        function generateROIAnalysisChart() {
+            // Process efficiency improvements across different departments
+            const departments = ['מחלקת תביעות', 'בדיקת זכאויות', 'שירות לקוחות', 'ביקורת רפואי', 'ניהול סיכונים'];
+            
+            const beforeAI = {
+                avgProcessingTime: [180, 240, 90, 300, 420], // minutes
+                dailyVolume: [250, 150, 400, 80, 60], // cases per day
+                errorRate: [12, 15, 8, 20, 25] // percentage
+            };
+
+            const afterAI = {
+                avgProcessingTime: [45, 60, 20, 75, 105], // minutes  
+                dailyVolume: [850, 600, 1200, 320, 240], // cases per day
+                errorRate: [2, 3, 1, 4, 5] // percentage
+            };
+
+            // Calculate efficiency improvements
+            const timeImprovement = beforeAI.avgProcessingTime.map((before, i) => 
+                ((before - afterAI.avgProcessingTime[i]) / before * 100).toFixed(1)
+            );
+
+            const volumeImprovement = beforeAI.dailyVolume.map((before, i) => 
+                ((afterAI.dailyVolume[i] - before) / before * 100).toFixed(1)
+            );
+
+            const data = [{
+                x: departments,
+                y: beforeAI.avgProcessingTime,
+                type: 'bar',
+                name: 'זמן עיבוד - לפני AI (דקות)',
+                marker: { color: '#ef4444', opacity: 0.8 },
+                yaxis: 'y',
+                hovertemplate: '<b>%{x}</b><br>זמן עיבוד: %{y} דקות<br>שיטה: עיבוד מסורתי<extra></extra>'
+            }, {
+                x: departments,
+                y: afterAI.avgProcessingTime,
+                type: 'bar', 
+                name: 'זמן עיבוד - עם AI (דקות)',
+                marker: { color: '#10b981', opacity: 0.9 },
+                yaxis: 'y',
+                hovertemplate: '<b>%{x}</b><br>זמן עיבוד: %{y} דקות<br>שיטה: AI מתקדם<br>שיפור: %{text}%<extra></extra>',
+                text: timeImprovement
+            }, {
+                x: departments,
+                y: afterAI.dailyVolume,
+                type: 'scatter',
+                mode: 'markers',
+                name: 'נפח יומי עם AI (תיקים)',
+                marker: { 
+                    size: 12,
+                    color: '#7c3aed',
+                    symbol: 'diamond'
+                },
+                yaxis: 'y2',
+                hovertemplate: '<b>%{x}</b><br>נפח יומי: %{y} תיקים<br>שיפור: +%{text}%<extra></extra>',
+                text: volumeImprovement
+            }];
+
+            const layout = {
+                title: { 
+                    text: 'שיפור ביצועים תפעוליים - השוואה בין מחלקות', 
+                    font: { size: 18, family: 'Heebo' } 
+                },
+                xaxis: { 
+                    title: 'מחלקות בחברה', 
+                    font: { family: 'Heebo' },
+                    tickangle: -45
+                },
+                yaxis: { 
+                    title: 'זמן עיבוד (דקות)', 
+                    font: { family: 'Heebo' },
+                    side: 'right'
+                },
+                yaxis2: { 
+                    title: 'נפח יומי (תיקים)', 
+                    font: { family: 'Heebo' },
+                    overlaying: 'y',
+                    side: 'left'
+                },
+                font: { family: 'Heebo' },
+                plot_bgcolor: 'rgba(255,255,255,0.8)',
+                paper_bgcolor: 'rgba(248,250,252,0.9)',
+                showlegend: true,
+                legend: { 
+                    x: 0.02, 
+                    y: 0.98,
+                    bgcolor: 'rgba(255,255,255,0.9)',
+                    bordercolor: 'rgba(0,0,0,0.2)',
+                    borderwidth: 1,
+                    font: { size: 11 }
+                },
+                annotations: [{
+                    text: 'שיפור דרמטי בזמני עיבוד וביצועים',
+                    showarrow: false,
+                    x: 2,
+                    y: 350,
+                    font: { 
+                        color: '#1e40af', 
+                        size: 14, 
+                        family: 'Heebo'
+                    },
+                    bgcolor: 'rgba(255,255,255,0.8)',
+                    bordercolor: '#1e40af',
+                    borderwidth: 1
+                }],
+                hovermode: 'x unified'
+            };
+
+            Plotly.newPlot('roi-analysis-chart', data, layout, {responsive: true});
+        }
+
+
+
+
+
+        // Initialize presentation - completely clean
+        document.addEventListener('DOMContentLoaded', function() {
+            showSlide(0);
+            
+            // Simple loading effect only
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+                document.body.style.transition = 'opacity 0.5s ease';
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+    </script>
+</body>
+</html>

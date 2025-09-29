@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Virtual environments
+venv/
+.env/
+.venv/
+
+# OS/editor
+.DS_Store
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# Build/packaging
+build/
+dist/
+*.egg-info/
+
+# Data/artifacts
+*.db
+*.sqlite
+*.sqlite3
+ocr_out/
+ocr_full_extraction/
+patients_db.json
+med_patient#*.pdf
+
+# Logs
+logs/
+*.log
+
+# Node
+node_modules/
+
+# Nested git repo (treat separately if needed)
+MediRAG_UI/
+
+# Project-specific
+start rag medical (copy).txt
+start_medi_rag_ai.txt
+gemini_quota_cache.db

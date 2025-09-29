@@ -1,0 +1,24 @@
+#!/bin/bash
+# Gemini API Key Setup Script
+# Generated from api_gemini15.txt with 70 total keys
+
+# Primary API key
+export GEMINI_API_KEY="AIzaSyDV8A5FNAFJ6mqfFr9ca35ip_DfPiqijr8"
+
+# Additional keys for rotation (69 keys)
+export GEMINI_API_KEYS="AIzaSyBg6UZoZiytv3YJBS6YFgiCu4Vsry7pGws,AIzaSyBVJgz6Zyw0KvBJP48Wrlab_WeAwIr8JFM,AIzaSyBWe22ERr40uQfwITmlarWb1G6o76p9Jhs,AIzaSyB8zueFEpcxYcoMUW3bRnM2GBnpmDRV8FE,AIzaSyAZ98z2tSjRhv6z96XGaaM6GzK5TqmIA3g,AIzaSyCqcJgtjWvk1Z39yIAFuh_tNMJFLFOFmr8,AIzaSyCqcJgtjWvk1Z39yIAFuh_tNMJFLFOFmr8,AIzaSyAJXzWMYt-hlb9dXQWVFqvVnwhbCqA2qao,AIzaSyBSVCyueDGvV1Xa0NmiX6vmyrh0Ug45XBU,AIzaSyDmC9dLkvtmTutBOoThyuuEmd2DdO6L-M8,AIzaSyBsmPRl6M0IW0P5q4hm1UcL4dsqGhOkAMA,AIzaSyAC-Rvs8iM3oCs0TIRXGdSxUCoaYdz2WGk,AIzaSyC0nHuRm9CQ-39dzCR-liX9rsGf52KwTm4,AIzaSyBoRcX9nsFeJIJeS2atQX3NNUL9YpOwQeM,AIzaSyBigqgHWD77zmS9SW4-BhTqlI3njoxzU78,AIzaSyCKecp0XOlf-FV1JkCZTiqygmJ_LdeJpPM,AIzaSyC3i1LQ7F5VCftFFRvTqzizmIGr5Ewm_2I,AIzaSyAZ4600HG4ClxK89kA55ACeOTzB6Ta3Gt8,AIzaSyCyFjDyWPur87loM0YqdVEukzqIwRef_tM,AIzaSyB9Gia2yb0-Lop-Q4pIekfm0EjHYu1M0lc,AIzaSyDxy1Qav4GDUfeZZT9Q7ze1YL3jCc2Wcgk,AIzaSyC6QPQhgNUzXXXut-0s4B6oMFds2KBV8S4,AIzaSyDkIMzhld-Qeu9irgUcgNOld1lSSHLklG4,AIzaSyAyI7uO9TbWuEyDCS09A94bJ3RZorTtqMI,AIzaSyB1sp_LcpncGy8jQ6LDMVcQu_u-Iy8-zQs,AIzaSyDOkcbxqRBIzfiNk_qInOHfvIlA_Nm5WeM,AIzaSyDcHF2Uckfx40qpSfF4tiBNRyYHrsxQ-us,AIzaSyBh9Wc3SVmWDCtx9P-s9Z-6m6QyaQa2bJE,AIzaSyBf-6VY0RG6igqpybgpkJOMXkLFQLdm0pY,AIzaSyClHM4zNo-w4aYJdaC_XUVIqryLeda0mRM,AIzaSyCfn8IarJ5IcQzs9fHqWx89BPdTkIDZzug,AIzaSyCXOc69Jte8aUjbiif3cBMPCD0v8aCeVl0,AIzaSyAPxqnvrV7EuXLJTIRQ6k3Bhfdj4jSPVWA,AIzaSyAE4ClGKtontljefKOVsquswhz-m9vRjQk,AIzaSyCGKJUdvw87TiwZmG3UwOonsLngEA5LFmg,AIzaSyD91_kTVzJDFjv1-rMLdRTSK9i5xFlb0L4,AIzaSyBgS4iXCWfjM5eIzlXqbkMv3QQuSlQ-kPI,AIzaSyDL-nZ0vEsvhtub_iLTeNBuoJTkL5feKEc,AIzaSyANyhcNnMqdOsjnNUpjqWcgfQ7TElU0dGI,AIzaSyC-YIiDtM3zWotHCD07D25UuUahs0TFzxg,AIzaSyCfFDc1X107M-wGokGIqmrDNm55PGiqfFQ,AIzaSyCMphfJpIw_5UuIcgrb5RITW1o79fzHTYM,AIzaSyA62gMVmO6FpNwtCeR35zSOrehybcXHS3c,AIzaSyB0xxJbrLEN0cq6392Drlg6M3BhdyODRuk,AIzaSyADQyA9tycbXWWU5HxwgjzQlcRd6GGkWFU,AIzaSyChrPUX5PhquduMKu7neqj7wrhxMn5_hlU,AIzaSyC61-AAwWANvnRIG7GWXHJs_1hnYeNPHgs,AIzaSyBQ5pOT5A8mc8ywxbIAPtlq6azAA_hfRS4,AIzaSyDGfzUZlW7O2-7dFtcxEfoLjS8XrRDaV9c,AIzaSyC3E6hM0igh22fOi_bv7Fne6uFrPh-Lxj8,AIzaSyCU5Ne26fYpZhMDJqNI_zR7rdYqx-9wUsM,AIzaSyAn-kriMRLuOx4qz5MMtUs8Q6S-bB3piKw,AIzaSyAC8q9TqJZNTOc0ZEYSHv8z6Uj_t-pucng,AIzaSyAtS-dCtFZvle4rrrjQ0R6MEoGTl4GVht4,AIzaSyBOM5El2gTGjk4nD90kMRaQG5DaGvRrufk\,AIzaSyD_GcICY3GM95lnLKOYoR9o8Ko3SoMF0Yo,AIzaSyAs62V-f00XOCFWX3BP6cqdXDJX0V1BcJE,AIzaSyD20ONnd2vcTR0xg2v9qaBHSAorEwzl1Qk,AIzaSyAHdiEG8k63s06tzdCRwwP-oUI7EVr0ric,AIzaSyCoTPhgsr9rYj49sd1yZRzPPN93gr4ec6Q,AIzaSyDEwrUuAFZfAOR7y66qjS7hHLAemOeLIhw,AIzaSyBwXHuOb2nP_8_8in8nekVohTw51i66NGg,AIzaSyBf18FdlQZ-RccuiKJVGjiUvyrVg17ajzU,AIzaSyAw60u5AXKt09IpSozTz6_dgRPsgXf45G4,AIzaSyBD6I7fku-JaqOZT1tpNc0-byOesXSUgW0,AIzaSyCwXBwQBDPaVdJdesIQPsaHwhruyIv2jJU,AIzaSyCenKlyIFGdmR0hdqXOGKrgWfs6EbLMwmU,AIzaSyD-W5O5LBLcoaP7oNB8_mXOjWry_oN9axs,AIzaSyDB-yUt-vytjBOIw8a7wmi3TpyxJwgME18"
+
+# Quota management configuration
+export GEMINI_RPS="2"                    # 2 requests per second with key rotation
+export GEMINI_RETRIES="3"                # 3 retry attempts
+export GEMINI_MODEL="gemini-1.5-flash"   # Preferred model
+export GEMINI_ALT_MODELS="gemini-2.0-flash-exp,gemini-1.5-pro,gemini-1.5-flash-latest"
+export GEMINI_MAX_TOKENS="4096"          # Max tokens per request
+export GEMINI_BACKOFF_BASE="0.5"         # Fast backoff with multiple keys
+export GEMINI_BACKOFF_MAX="10"           # Max backoff time
+
+echo "Gemini API environment configured:"
+echo "  Primary key: ${GEMINI_API_KEY:0:20}..."
+echo "  Rotation keys: 69 available"
+echo "  Rate limit: 2 RPS with intelligent throttling"
+echo "  Model fallback: enabled"
