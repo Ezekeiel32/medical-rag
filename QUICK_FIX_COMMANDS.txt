@@ -1,0 +1,109 @@
+==================================================
+QUICK FIX FOR RUNPOD BACKEND - COPY & PASTE THESE
+==================================================
+
+You're already connected to your RunPod pod. Now run these commands:
+
+STEP 1: Copy the fix script to your pod
+-----------------------------------------
+cat > /tmp/fix.sh << 'EOF'
+#!/bin/bash
+echo "=== Quick Fix Starting ==="
+
+# Ensure environment
+micromamba activate medrag
+
+# Navigate to backend
+cd /workspace/rag_medical_gpu/backend || cd /workspace/rag_medical/backend
+
+# Clean up
+pkill -f 'uvicorn main:app' 2>/dev/null
+fuser -k 8000/tcp 2>/dev/null
+sleep 2
+
+# Set environment
+export CUDA_VISIBLE_DEVICES=0
+export PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:512
+export PYTHONPATH="/workspace/rag_medical_gpu/backend:/workspace/rag_medical_gpu:/workspace/rag_medical_gpu/src:$PYTHONPATH"
+
+# Quick dependency check
+pip install -q uvicorn[standard] fastapi pydantic httpx python-multipart python-dotenv chromadb sentence-transformers 2>/dev/null
+
+# Start server
+echo "Starting server..."
+nohup uvicorn main:app --host 0.0.0.0 --port 8000 --no-access-log --proxy-headers --no-server-header > /workspace/uvicorn.log 2>&1 &
+PID=$!
+echo "Started with PID: $PID"
+
+# Wait and test
+sleep 5
+if curl -sS http://127.0.0.1:8000/ >/dev/null 2>&1; then
+    echo "✅ SUCCESS! Server running on port 8000"
+    curl -sS http://127.0.0.1:8000/ | head -3
+    echo ""
+    echo "Now create SSH tunnel from your laptop:"
+    echo "ssh -L 8000:127.0.0.1:8000 -i ~/.ssh/id_ed25519 g1sz4cjvu4dfdc-64411397@ssh.runpod.io"
+else
+    echo "❌ FAILED - Check errors:"
+    tail -20 /workspace/uvicorn.log
+fi
+EOF
+
+chmod +x /tmp/fix.sh
+/tmp/fix.sh
+
+
+STEP 2: If the above fails, run the detailed diagnostic
+--------------------------------------------------------
+bash /home/chezy/rag_medical\ \(Copy\)/runpod_immediate_fix.sh
+
+
+STEP 3: Once backend is running, on your LAPTOP run:
+-----------------------------------------------------
+# Create SSH tunnel (in a new terminal on your laptop)
+ssh -L 8000:127.0.0.1:8000 -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes g1sz4cjvu4dfdc-64411397@ssh.runpod.io
+
+# Test connection (in another terminal on your laptop)
+curl http://localhost:8000/
+curl http://localhost:8000/api/patients
+
+# Access frontend
+http://localhost:5173
+
+
+ALTERNATIVE: If import errors persist
+--------------------------------------
+# On RunPod, manually check what's wrong:
+cd /workspace/rag_medical_gpu/backend
+python -c "import main; print('Import OK')"
+
+# If error, check missing dependencies:
+python -c "
+try: import chromadb
+except: print('Missing chromadb')
+try: import sentence_transformers  
+except: print('Missing sentence-transformers')
+try: import pandas
+except: print('Missing pandas')
+"
+
+# Install missing ones:
+pip install chromadb sentence-transformers pandas numpy
+
+# Then retry starting:
+uvicorn main:app --host 0.0.0.0 --port 8000
+
+
+TROUBLESHOOTING CHECKLIST
+-------------------------
+✓ You're connected to RunPod pod
+✓ Medrag environment is activated
+✗ Backend not starting (Connection refused)
+  
+Common fixes:
+1. Missing dependencies (chromadb, sentence-transformers)
+2. Python path issues (need to include src directory)
+3. GPU memory issues (set CUDA environment variables)
+4. Port 8000 already in use (kill existing processes)
+
+==================================================

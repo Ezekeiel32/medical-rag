@@ -1,0 +1,112 @@
+# Commands to run on your RunPod pod (you're already connected)
+# Copy and paste these commands into your RunPod terminal
+
+# 1. First, create the diagnostic script on the pod
+cat > /workspace/fix_backend.sh << 'EOF'
+#!/bin/bash
+
+echo "========================================="
+echo "RunPod Backend Quick Fix"
+echo "========================================="
+
+# Kill any existing processes
+pkill -f 'uvicorn main:app' 2>/dev/null || true
+fuser -k 8000/tcp 2>/dev/null || true
+sleep 2
+
+# Check the log for errors
+echo "Checking previous errors..."
+if [ -f /workspace/uvicorn.log ]; then
+    echo "Last errors from uvicorn.log:"
+    tail -10 /workspace/uvicorn.log
+fi
+
+# Navigate to backend directory
+cd /workspace/rag_medical_gpu/backend
+
+# Check if main.py exists
+if [ ! -f main.py ]; then
+    echo "ERROR: main.py not found!"
+    ls -la
+    exit 1
+fi
+
+# Test Python import
+echo "Testing Python import..."
+python -c "
+import sys
+sys.path.insert(0, '/workspace/rag_medical_gpu/backend')
+sys.path.insert(0, '/workspace/rag_medical_gpu')
+try:
+    import main
+    print('✓ main.py can be imported')
+except Exception as e:
+    print(f'✗ Import error: {e}')
+    import traceback
+    traceback.print_exc()
+" 2>&1
+
+# Check dependencies
+echo "Checking dependencies..."
+for pkg in uvicorn fastapi pydantic httpx; do
+    python -c "import $pkg" 2>/dev/null && echo "✓ $pkg" || echo "✗ $pkg missing"
+done
+
+# Start uvicorn with debug output
+echo "Starting uvicorn..."
+export PYTHONPATH="/workspace/rag_medical_gpu/backend:/workspace/rag_medical_gpu:$PYTHONPATH"
+cd /workspace/rag_medical_gpu/backend
+
+# First try to run in foreground briefly to see any errors
+echo "Testing startup (5 seconds)..."
+timeout 5 python -m uvicorn main:app --host 0.0.0.0 --port 8000 --log-level info 2>&1 | head -30
+
+# Now start in background
+echo "Starting background server..."
+nohup python -m uvicorn main:app \
+    --host 0.0.0.0 \
+    --port 8000 \
+    --no-access-log \
+    --proxy-headers \
+    --no-server-header \
+    > /workspace/uvicorn.log 2>&1 &
+
+echo "Waiting for server..."
+sleep 3
+
+# Test endpoints
+echo "Testing endpoints..."
+curl -sS http://127.0.0.1:8000/ 2>&1 || echo "Root endpoint failed"
+echo ""
+curl -sS http://127.0.0.1:8000/api/patients 2>&1 || echo "API endpoint failed"
+
+# Check if running
+if lsof -Pi :8000 -sTCP:LISTEN -t >/dev/null 2>&1; then
+    echo "✓ Server is running on port 8000"
+else
+    echo "✗ Server is NOT running"
+    echo "Log contents:"
+    tail -20 /workspace/uvicorn.log
+fi
+EOF
+
+# 2. Make it executable
+chmod +x /workspace/fix_backend.sh
+
+# 3. Run it
+/workspace/fix_backend.sh
+
+# 4. If the above doesn't work, try this minimal test:
+echo "===== MINIMAL TEST ====="
+cd /workspace/rag_medical_gpu/backend
+python -c "from main import app; print('App imported successfully')"
+
+# 5. Check for missing dependencies
+pip list | grep -E "uvicorn|fastapi|pydantic|httpx|surya"
+
+# 6. If dependencies are missing, install them:
+# pip install uvicorn[standard] fastapi pydantic httpx python-multipart python-dotenv
+
+# 7. Alternative: Try running directly with Python
+# cd /workspace/rag_medical_gpu/backend
+# python main.py
