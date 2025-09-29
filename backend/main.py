@@ -490,6 +490,9 @@ async def get_ocr_status(jobId: str):
 # -----------------------------
 # Integrated Patient Creation with OCR
 # -----------------------------
+# Global job tracking for async PDF processing
+PDF_UPLOAD_JOBS: Dict[str, Dict[str, Any]] = {}
+
 @app.post("/api/patients/create-from-pdf")
 async def create_patient_from_pdf(
     file: UploadFile = File(...),
@@ -497,35 +500,70 @@ async def create_patient_from_pdf(
     background_tasks: BackgroundTasks = None,
 ):
     """
-    Upload a PDF, run OCR, extract patient name/ID, create patient,
-    and set up their isolated vector store.
+    Upload a PDF asynchronously - accept file immediately and process in background.
+    Returns job ID for status polling to avoid Cloudflare timeouts.
     """
     global rag_service
     if rag_service is None:
         ocr_dir = os.environ.get("OCR_DIR", str(Path(__file__).parent.parent / "ocr_out"))
         rag_service = RAGService(ocr_dir)
-    
+
     if not file or not file.filename or not file.filename.lower().endswith(".pdf"):
         raise HTTPException(status_code=400, detail="Please upload a .pdf file")
-    
-    # Step 1: Create patient directory structure first
-    patient_id = f"patient_{datetime.now().strftime('%Y%m%d%H%M%S')}"
-    pdir = Path(rag_service.base_root) / patient_id
-    pdir.mkdir(parents=True, exist_ok=True)
-    pdf_dir = pdir / "pdfs"
-    pdf_dir.mkdir(parents=True, exist_ok=True)
-    
-    # Step 2: Save PDF to patient's folder
-    final_pdf = pdf_dir / file.filename
-    with open(final_pdf, 'wb') as f:
-        f.write(await file.read())
-    
+
+    # Create job ID immediately
+    job_id = str(uuid.uuid4())
+    PDF_UPLOAD_JOBS[job_id] = {
+        "status": "accepted",
+        "filename": file.filename,
+        "patient_id": None,
+        "patient_name": None,
+        "error": None,
+        "started_at": datetime.now().isoformat() + "Z",
+        "completed_at": None,
+    }
+
+    # Start background processing
+    if background_tasks is not None:
+        background_tasks.add_task(process_pdf_upload_async, job_id, file, bidi)
+    else:
+        asyncio.create_task(process_pdf_upload_async(job_id, file, bidi))
+
+    return {
+        "jobId": job_id,
+        "status": "accepted",
+        "message": "PDF upload accepted. Processing in background.",
+        "filename": file.filename,
+        "note": "Use GET /api/patients/upload-status/{jobId} to check progress"
+    }
+
+async def process_pdf_upload_async(job_id: str, file: UploadFile, bidi: str = "visual") -> None:
+    """Process PDF upload in background to avoid timeouts."""
     try:
-        # Step 3: Run full OCR pipeline on the patient's directory
+        PDF_UPLOAD_JOBS[job_id]["status"] = "processing"
+
+        # Read file content
+        file_content = await file.read()
+
+        # Create patient directory structure
+        patient_id = f"patient_{datetime.now().strftime('%Y%m%d%H%M%S')}"
+        pdir = Path(rag_service.base_root) / patient_id
+        pdir.mkdir(parents=True, exist_ok=True)
+        pdf_dir = pdir / "pdfs"
+        pdf_dir.mkdir(parents=True, exist_ok=True)
+
+        # Save PDF to patient's folder
+        final_pdf = pdf_dir / file.filename
+        with open(final_pdf, 'wb') as f:
+            f.write(file_content)
+
+        PDF_UPLOAD_JOBS[job_id]["status"] = "ocr_running"
+
+        # Run full OCR pipeline on the patient's directory
         from src.ocr_pipeline import ocr_pdf_best  # type: ignore
         from src.ocr_audit import audit_results  # type: ignore
         from src.ocr_structuring import build_ocr_documents  # type: ignore
-        
+
         # Run OCR on the PDF in the patient's directory
         ocr_results = ocr_pdf_best(
             pdf_path=str(final_pdf),
@@ -538,8 +576,10 @@ async def create_patient_from_pdf(
             bidi_mode=bidi,
             preprocess=False,
         )
-        
-        # Step 4: Run audit and alignment on the OCR results
+
+        PDF_UPLOAD_JOBS[job_id]["status"] = "extracting_info"
+
+        # Run audit and alignment on the OCR results
         try:
             audit_results(str(pdir))
             # Build structured documents from aligned results
@@ -553,12 +593,12 @@ async def create_patient_from_pdf(
         except Exception as e:
             print(f"Audit/structuring failed: {e}")
             # Continue without audit if it fails
-        
-        # Step 5: Extract patient name and ID from OCR results
+
+        # Extract patient name and ID from OCR results
         patient_info = extract_patient_info(ocr_results)
         patient_name = patient_info.get('name')
         patient_id_from_doc = patient_info.get('id')
-        
+
         # If no name found, use filename or default
         if not patient_name:
             patient_name = Path(file.filename).stem.replace('_', ' ').replace('-', ' ')
@@ -566,18 +606,18 @@ async def create_patient_from_pdf(
             patient_name = re.sub(r'\d+', '', patient_name).strip()
             if not patient_name:
                 patient_name = "מבוטח חדש"
-        
-        # Step 6: Update patient ID if we found one in the document
+
+        # Update patient ID if we found one in the document
         if patient_id_from_doc:
             # Check if patient with this ID already exists
             db = _load_patients_db()
             original_patient_id = patient_id
             patient_id = f"patient_{patient_id_from_doc}"
-            
+
             if patient_id in db:
                 # Use timestamp-based ID if conflict
                 patient_id = f"{original_patient_id}_{patient_id_from_doc}"
-            
+
             # If we changed the patient ID, move the directory
             if patient_id != original_patient_id:
                 new_pdir = Path(rag_service.base_root) / patient_id
@@ -585,8 +625,8 @@ async def create_patient_from_pdf(
                     import shutil
                     shutil.move(str(pdir), str(new_pdir))
                     pdir = new_pdir
-        
-        # Step 7: Save patient to database
+
+        # Save patient to database
         db = _load_patients_db()
         db[patient_id] = {
             "name": patient_name,
@@ -594,40 +634,56 @@ async def create_patient_from_pdf(
             "lastUpdatedIso": datetime.now().isoformat() + "Z",
         }
         _save_patients_db(db)
-        
-        # Step 8: Run indexing in background
+
+        PDF_UPLOAD_JOBS[job_id]["status"] = "indexing"
+        PDF_UPLOAD_JOBS[job_id]["patient_id"] = patient_id
+        PDF_UPLOAD_JOBS[job_id]["patient_name"] = patient_name
+
+        # Run indexing in background
         INGEST_STATUS[patient_id] = "queued"
-        if background_tasks is not None:
-            background_tasks.add_task(run_patient_ingest_sync, patient_id, bidi)
-        else:
-            asyncio.create_task(run_patient_ingest_async(patient_id, bidi))
-        
-        return {
-            "success": True,
-            "patient": {
-                "idNumber": patient_id,
-                "name": patient_name,
-                "docCount": 1,
-                "lastUpdatedIso": db[patient_id]["lastUpdatedIso"]
-            },
-            "extractedInfo": {
-                "name": patient_info.get('name'),
-                "id": patient_info.get('id'),
-                "nameSource": "extracted" if patient_info.get('name') else "filename"
-            },
-            "ingestStatus": "started",
-            "message": f"מבוטח '{patient_name}' נוצר בהצלחה והמסמך בעיבוד"
-        }
-        
+        await run_patient_ingest_async(patient_id, bidi)
+
+        PDF_UPLOAD_JOBS[job_id]["status"] = "completed"
+        PDF_UPLOAD_JOBS[job_id]["completed_at"] = datetime.now().isoformat() + "Z"
+
     except Exception as e:
+        PDF_UPLOAD_JOBS[job_id]["status"] = "error"
+        PDF_UPLOAD_JOBS[job_id]["error"] = str(e)
+        PDF_UPLOAD_JOBS[job_id]["completed_at"] = datetime.now().isoformat() + "Z"
+
         # Clean up patient directory on error
-        if pdir.exists():
+        if 'pdir' in locals() and pdir.exists():
             try:
                 import shutil
                 shutil.rmtree(pdir, ignore_errors=True)
             except:
                 pass
-        raise HTTPException(status_code=500, detail=f"Failed to process PDF: {str(e)}")
+
+@app.get("/api/patients/upload-status/{job_id}")
+async def get_upload_status(job_id: str):
+    """Check the status of a PDF upload job."""
+    job = PDF_UPLOAD_JOBS.get(job_id)
+    if not job:
+        raise HTTPException(status_code=404, detail="Upload job not found")
+
+    response = {
+        "jobId": job_id,
+        "status": job["status"],
+        "filename": job["filename"],
+        "started_at": job["started_at"],
+    }
+
+    if job["status"] == "completed":
+        response["patient"] = {
+            "idNumber": job["patient_id"],
+            "name": job["patient_name"],
+        }
+        response["completed_at"] = job["completed_at"]
+    elif job["status"] == "error":
+        response["error"] = job["error"]
+        response["completed_at"] = job["completed_at"]
+
+    return response
 
 @app.get("/api/ocr/result")
 async def get_ocr_result(jobId: str):
