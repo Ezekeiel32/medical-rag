@@ -81,13 +81,27 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# CORS middleware for frontend
+# CORS middleware for frontend - support local and RunPod URLs
+allowed_origins = [
+    "http://127.0.0.1:5173",
+    "http://localhost:5173", 
+    "https://contentcraft-ai-l5m5m.web.app",
+    "*"  # Allow all origins for RunPod public URLs
+]
+
+# Get RunPod public URL from environment if set
+runpod_url = os.environ.get("RUNPOD_PUBLIC_URL")
+if runpod_url:
+    allowed_origins.append(runpod_url)
+    print(f" RunPod public URL configured: {runpod_url}")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://127.0.0.1:5173", "http://localhost:5173", "https://contentcraft-ai-l5m5m.web.app"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"],  # Expose all headers for file downloads
 )
 
 # Patients registry file (simple JSON-based DB)
@@ -297,7 +311,12 @@ rag_service: Optional[RAGService] = None
 @app.get("/")
 async def root():
     """Health check endpoint."""
-    return {"message": "MediRAG API is running", "version": "1.0.0"}
+    return {
+        "message": "MediRAG API is running", 
+        "version": "1.0.0",
+        "runpod_mode": bool(os.environ.get("RUNPOD_PUBLIC_URL")),
+        "public_url": os.environ.get("RUNPOD_PUBLIC_URL")
+    }
 
 @app.get("/api/patients", response_model=Dict[str, List[PatientSummary]])
 async def get_patients(search: str = ""):
@@ -1172,16 +1191,23 @@ async def delete_patient(patient_id: str):
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
-    host = os.environ.get("HOST", "127.0.0.1")
+    host = os.environ.get("HOST", "0.0.0.0")  # Default to all interfaces for RunPod
     
     print(f"Starting MediRAG API server on {host}:{port}")
-    print(f"Frontend should be accessible at: http://127.0.0.1:5173")
+    
+    # Check if running on RunPod
+    if os.environ.get("RUNPOD_PUBLIC_URL"):
+        print(f"RunPod public URL: {os.environ.get('RUNPOD_PUBLIC_URL')}")
+        print("Configure your frontend to use this URL")
+    else:
+        print(f"Frontend should be accessible at: http://127.0.0.1:5173")
+    
     print(f"API docs available at: http://{host}:{port}/docs")
     
     uvicorn.run(
         "main:app",
         host=host,
         port=port,
-        reload=True,
+        reload=False,  # Disable reload for production
         log_level="info"
     )
